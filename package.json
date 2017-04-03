@@ -1,0 +1,29 @@
+{
+  "name": "@dr/bybilleder",
+  "version": "0.1.0",
+  "description": "Website for navigating and showing collages from the Danish Broadcasting Corporations Archive",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Socialsquare/dr-bybilleder.git"
+  },
+  "author": "Kræn Hansen <kraen@socialsquare.dk>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Socialsquare/dr-bybilleder/issues"
+  },
+  "homepage": "https://github.com/Socialsquare/dr-bybilleder#readme",
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "express": "~4.15.2",
+    "morgan": "~1.8.1",
+    "pug": "~2.0.0-beta11",
+    "serve-favicon": "~2.4.2"
+  }
+}
