@@ -24,7 +24,7 @@ app.use(cookieParser());
 
 // Serve static files from the clients build folder
 const CLIENT_BUILD_PATH = path.join(__dirname, 'client', 'build');
-assert.ok(fs.existsSync(CLIENT_BUILD_PATH), 'Build the client firts');
+assert.ok(fs.existsSync(CLIENT_BUILD_PATH), 'Build the client first');
 app.use(express.static(CLIENT_BUILD_PATH));
 
 app.use('/', collages);

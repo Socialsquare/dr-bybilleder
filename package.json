@@ -6,10 +6,11 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install-client": "cd client && npm install",
     "build-client": "cd client && npm run build",
     "dev": "concurrently \"docker-compose up\" \"PORT=3001 nodemon ./bin/www\" \"cd client && npm run start\"",
-    "prepublish": "npm run install-client && npm run build-client"
+    "install-client": "cd client && npm install",
+    "postinstall": "npm run install-client && npm run build-client",
+    "prepublish": "npm run install-client"
   },
   "repository": {
     "type": "git",
