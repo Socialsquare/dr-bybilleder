@@ -1,10 +1,11 @@
 const assert = require('assert');
-const express = require('express');
-const path = require('path');
-const favicon = require('serve-favicon');
-const logger = require('morgan');
-const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const favicon = require('serve-favicon');
+const fs = require('fs');
+const logger = require('morgan');
+const path = require('path');
 
 const collages = require('./routes/collages');
 
@@ -20,12 +21,15 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Serve static files from the clients build folder
 const CLIENT_BUILD_PATH = path.join(__dirname, 'client', 'build');
+assert.ok(fs.existsSync(CLIENT_BUILD_PATH), 'Build the client firts');
 app.use(express.static(CLIENT_BUILD_PATH));
 
 app.use('/', collages);
 
-// Instead of 404, render the clientside index.html
+// Instead of 404, render the clients index.html
 const CLIENT_INDEX_PATH = path.join(CLIENT_BUILD_PATH, 'index.html');
 app.use(function(req, res, next) {
   res.sendFile(CLIENT_INDEX_PATH);
