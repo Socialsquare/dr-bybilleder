@@ -19,15 +19,15 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+const CLIENT_BUILD_PATH = path.join(__dirname, 'client', 'build');
+app.use(express.static(CLIENT_BUILD_PATH));
 
 app.use('/', collages);
 
-// catch 404 and forward to error handler
+// Instead of 404, render the clientside index.html
+const CLIENT_INDEX_PATH = path.join(CLIENT_BUILD_PATH, 'index.html');
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  res.sendFile(CLIENT_INDEX_PATH);
 });
 
 // error handler
