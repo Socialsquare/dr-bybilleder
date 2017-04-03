@@ -1,0 +1,7 @@
+mongo:
+  image: mongo:3
+  volumes:
+    - ./db/mongo:/data/db
+  ports:
+    - "27017:27017"
+  command: --smallfiles
