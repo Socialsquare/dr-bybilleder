@@ -16,3 +16,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# CSS should be build from SCSS
+/src/**/*.css
