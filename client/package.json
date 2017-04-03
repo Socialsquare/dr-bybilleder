@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^15.4.2",
+    "node-sass": "^4.5.2",
     "react-dom": "^15.4.2",
-    "react-scripts": "0.9.5"
+    "react-scripts": "0.9.5",
+    "react": "^15.4.2"
   },
   "proxy": "http://localhost:3001",
   "scripts": {
+    "watch-sass": "npm run build-sass && node-sass --watch --recursive --source-map true --source-map-contents --output src src",
+    "build-sass": "node-sass --recursive --output src src",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run build-sass && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
