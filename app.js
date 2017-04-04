@@ -32,13 +32,17 @@ const CLIENT_BUILD_PATH = path.join(__dirname, 'client', 'build');
 assert.ok(fs.existsSync(CLIENT_BUILD_PATH), 'Build the client first');
 app.use(express.static(CLIENT_BUILD_PATH));
 
-app.use('/', collages);
-
 // Instead of 404, render the clients index.html
 const CLIENT_INDEX_PATH = path.join(CLIENT_BUILD_PATH, 'index.html');
 app.use(function(req, res, next) {
-  res.sendFile(CLIENT_INDEX_PATH);
+  if(req.accepts(['html', 'json']) === 'html') {
+    res.sendFile(CLIENT_INDEX_PATH);
+  } else {
+    next();
+  }
 });
+
+app.use('/', collages);
 
 // error handler
 app.use(function(err, req, res, next) {
