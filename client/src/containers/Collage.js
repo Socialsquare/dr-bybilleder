@@ -8,7 +8,11 @@ class Collage extends Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
-    fetch('/' + id).then(response => {
+    const headers = new Headers();
+    headers.append('Accept', 'application/json');
+    fetch('/' + id, {
+      headers
+    }).then(response => {
       if (response.ok) {
         response.json().then(collage => {
           this.setState({
