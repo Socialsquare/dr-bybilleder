@@ -11,6 +11,10 @@
 		"thumbnail": {
 			"type": "string"
 		},
+		"created": {
+			"type": "string",
+			"format": "date-time"
+		},
     "videos": {
       "type": "array",
       "items": {
@@ -66,6 +70,7 @@
     "eventName",
     "videos",
     "image",
-    "thumbnail"
+    "thumbnail",
+    "created"
   ]
 }

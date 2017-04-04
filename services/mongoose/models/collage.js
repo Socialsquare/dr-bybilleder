@@ -16,6 +16,7 @@ const Collage = new Schema({
   },
   image: String,
   thumbnail: String,
+  created: Date,
   videos: [
     {
       xPos: Number,
