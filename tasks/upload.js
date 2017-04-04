@@ -11,8 +11,13 @@ const data = fs.readFileSync(PATH);
 const collageName = path.basename(PATH).split('.')[0];
 const collage = JSON.parse(data);
 
+let baseUrl = 'http://localhost:3000/';
+if(process.env.NODE_ENV === 'production') {
+  baseUrl = 'http://bybilleder.danskkulturarv.dk/';
+}
+
 request({
-  url: 'http://localhost:3000/' + collageName,
+  url: baseUrl + collageName,
   method: 'POST',
   json: true,
   body: collage
