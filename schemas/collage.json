@@ -1,0 +1,71 @@
+{
+	"title": "Collage",
+	"type": "object",
+	"properties": {
+		"eventName": {
+			"type": "string"
+		},
+		"image": {
+			"type": "string"
+		},
+		"thumbnail": {
+			"type": "string"
+		},
+    "videos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "xPos": {
+            "type": "number"
+          },
+          "yPos": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "videoData": {
+            "type": "object",
+            "properties": {
+              "MAitemID": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+          	"required": [
+              "MAitemID",
+              "title",
+              "description"
+            ]
+          }
+        },
+      	"required": [
+          "xPos",
+          "yPos",
+          "height",
+          "width",
+          "rotation",
+          "videoData"
+        ]
+      }
+    }
+	},
+	"required": [
+    "eventName",
+    "videos",
+    "image",
+    "thumbnail"
+  ]
+}

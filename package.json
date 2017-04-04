@@ -10,7 +10,10 @@
     "dev": "concurrently \"docker-compose up\" \"PORT=3001 nodemon ./bin/www\" \"cd client && npm run start\" \"cd client && npm run watch-sass\"",
     "install-client": "cd client && npm install",
     "postinstall": "npm run install-client && npm run build-client",
-    "prepublish": "npm run install-client"
+    "prepublish": "npm run install-client",
+    "upload": "node ./tasks/upload.js",
+    "extract-images": "node ./tasks/extract-images.js",
+    "create-bucket": "node ./tasks/create-bucket.js"
   },
   "repository": {
     "type": "git",
@@ -23,16 +26,25 @@
   },
   "homepage": "https://github.com/Socialsquare/dr-bybilleder#readme",
   "dependencies": {
+    "@google-cloud/storage": "^1.0.0",
+    "ajv": "^4.11.5",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
+    "dataurl": "^0.1.0",
     "debug": "~2.6.3",
     "express": "~4.15.2",
+    "fast-crc32c": "^1.0.4",
+    "google-cloud": "^0.50.0",
+    "mongoose": "^4.9.3",
     "morgan": "~1.8.1",
     "pug": "~2.0.0-beta11",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.0",
     "serve-favicon": "~2.4.2"
   },
   "devDependencies": {
     "concurrently": "^3.4.0",
+    "dotenv": "^4.0.0",
     "nodemon": "^1.11.0"
   }
 }
