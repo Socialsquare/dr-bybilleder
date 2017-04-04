@@ -36,4 +36,11 @@ router.get('/collages', function(req, res, next) {
   });
 });
 
+router.get('/:id', function(req, res, next) {
+  const id = req.params.id;
+  Collage.findOne({id}).then(collage => {
+    res.json(collage);
+  }, next);
+});
+
 module.exports = router;
