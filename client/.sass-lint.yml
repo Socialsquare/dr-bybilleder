@@ -1,0 +1,5 @@
+rules:
+  class-name-format:
+    - 1
+     # Overriding https://github.com/benthemonkey/sass-lint/blob/feature/class-name-format/lib/helpers.js#L181
+    - convention: (?!-{3}|_{3}|[^_]_[^_])

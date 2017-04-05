@@ -1,0 +1,12 @@
+$canvas-background: #111;
+
+.CollageCanvas__canvas {
+  background: $canvas-background;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.CollageCanvas__video-container {
+  display: none;
+}

@@ -18,3 +18,4 @@ yarn-error.log*
 
 # CSS should be build from SCSS
 /src/**/*.css
+/src/**/*.css.map

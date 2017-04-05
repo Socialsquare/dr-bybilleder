@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import CollageCanvas from '../presentationals/CollageCanvas';
+
 class Collage extends Component {
 
   state = {
@@ -24,14 +26,8 @@ class Collage extends Component {
   }
 
   render() {
-    const id = this.props.match.params.id;
-    return (
-      <div>
-        <h1>Collage #{id}</h1>
-        {this.state.collage ? (
-          <img src={this.state.collage.thumbnail} alt="Collage" />
-        ) : null}
-      </div>
+    return this.state.collage && (
+      <CollageCanvas collage={this.state.collage} />
     );
   }
 }
