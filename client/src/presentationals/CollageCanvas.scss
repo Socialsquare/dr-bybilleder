@@ -42,6 +42,7 @@ $overlay-background: rgba(0, 0, 0, .5);
   &__fullscreen-btn {
     bottom: 0;
     height: 7vmin;
+    overflow: hidden;
     position: absolute;
     right: 0;
     width: 7vmin;
