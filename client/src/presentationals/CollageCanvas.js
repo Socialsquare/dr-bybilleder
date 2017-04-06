@@ -161,7 +161,7 @@ class CollageCanvas extends Component {
         loop: true,
         autoplay: true,
         preload: 'auto',
-        mute: true,
+        muted: true,
         bigPlayButton: false,
         poster: video.videoData.files.thumbnail,
         techOrder: ['html5', 'flash']
@@ -177,12 +177,21 @@ class CollageCanvas extends Component {
         rotation: video.rotation
       });
 
+      // If the video needs a user gesture to start, we show the controls.
       player.on('suspend', (e) => {
         if(player.paused()) {
           this.showControls();
         }
       });
+      // When the video starts playing the large collage control get hidden.
       player.on('play', this.hideControls);
+      // When the volume changes
+      player.on('volumechange', e => {
+        if(!player.muted()) {
+          // Loop through all other players and mute them
+          this.muteAllPlayers(player);
+        }
+      });
       // Add a listner on error as well ...
     });
     this.redraw();
@@ -219,6 +228,14 @@ class CollageCanvas extends Component {
   hideControls() {
     this.setState({
       controlsVisible: false
+    });
+  }
+
+  muteAllPlayers(exceptPlayer) {
+    this.resources.videos.forEach(video => {
+      if(video.player !== exceptPlayer) {
+        video.player.muted(true);
+      }
     });
   }
 
@@ -269,6 +286,7 @@ class CollageCanvas extends Component {
     this.resources.videos.forEach(video => {
       video.player.off('suspend');
       video.player.off('play');
+      video.player.off('volumechange');
     });
     // Redraw when fullscreen changes
     fullscreen.removeListener(this.redraw);
