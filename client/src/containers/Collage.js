@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import CollageCanvas from '../presentationals/CollageCanvas';
+import MissingCollage from '../presentationals/MissingCollage';
 
 class Collage extends Component {
 
@@ -20,14 +21,20 @@ class Collage extends Component {
           this.setState({
             collage
           });
+        }, (e) => {
+          this.setState({
+            collage: null
+          });
         });
       }
     });
   }
 
   render() {
-    return this.state.collage && (
+    return this.state.collage ? (
       <CollageCanvas collage={this.state.collage} />
+    ) : (
+      <MissingCollage />
     );
   }
 }
