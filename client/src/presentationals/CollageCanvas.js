@@ -6,83 +6,16 @@ class CollageCanvas extends Component {
 
   resources = {};
 
+  state = {
+    controlsVisible: false
+  };
+
   constructor() {
     super();
     this.resized = this.resized.bind(this);
-  }
-
-  resized() {
-    // Set the height to the height of the element
-    this.canvas.height = this.canvas.offsetHeight;
-    this.canvas.width = this.canvas.offsetWidth;
-    this.redraw();
-  }
-
-  /* Loads the background image and all the videos that makes up the collage */
-  loadResources() {
-    const collage = this.props.collage;
-    // The background image
-    const backgroundElement = document.createElement('img');
-    backgroundElement.addEventListener('load', () => {
-      // When loaded, add this as a resource
-      this.resources.background = backgroundElement;
-      this.redraw();
-    });
-    backgroundElement.src = collage.image;
-    // The videos
-    this.resources.videos = [];
-    collage.videos.forEach(video => {
-      const videoElement = document.createElement('video');
-      videoElement.setAttribute('preload', 'auto');
-      videoElement.setAttribute('autoplay', 'true');
-
-      this.resources.videos.push({
-        element: videoElement,
-        x: video.xPos,
-        y: video.yPos,
-        width: video.width,
-        height: video.height,
-        rotation: video.rotation
-      });
-
-      const sourceElement = document.createElement('source');
-      sourceElement.setAttribute('src', video.videoData.files.hls);
-      sourceElement.setAttribute('type', 'application/x-mpegURL');
-      videoElement.appendChild(sourceElement);
-
-      this.videoContainer.appendChild(videoElement);
-      window.videojs(videoElement);
-      videoElement.play();
-    });
-    this.redraw();
-  }
-
-  backgroundPosition() {
-    const background = this.resources.background;
-    const canvas = this.canvas;
-
-    const canvasRatio = canvas.width / canvas.height;
-    const backgroundRatio = background.width / background.height;
-
-    if(canvasRatio > backgroundRatio) {
-      const height = canvas.height;
-      const width = canvas.height * backgroundRatio;
-      return {
-        height,
-        width,
-        x: (canvas.width - width) / 2,
-        y: 0
-      }
-    } else {
-      const height = canvas.width / backgroundRatio;
-      const width = canvas.width;
-      return {
-        height,
-        width,
-        x: 0,
-        y: (canvas.height - height) / 2
-      }
-    }
+    this.play = this.play.bind(this);
+    this.showControls = this.showControls.bind(this);
+    this.hideControls = this.hideControls.bind(this);
   }
 
   redraw() {
@@ -114,6 +47,107 @@ class CollageCanvas extends Component {
     }
   }
 
+  resized() {
+    // Considering the device pixels might be different from "pixels"
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    // Set the height to the height of the element
+    this.canvas.height = this.canvas.offsetHeight * devicePixelRatio;
+    this.canvas.width = this.canvas.offsetWidth * devicePixelRatio;
+    this.redraw();
+  }
+
+  /* Loads the background image and all the videos that makes up the collage */
+  loadResources() {
+    const collage = this.props.collage;
+    // The background image
+    const backgroundElement = document.createElement('img');
+    backgroundElement.addEventListener('load', () => {
+      // When loaded, add this as a resource
+      this.resources.background = backgroundElement;
+      this.redraw();
+    });
+    backgroundElement.src = collage.image;
+    // The videos
+    this.resources.videos = [];
+    collage.videos.forEach(video => {
+      const videoElement = document.createElement('video');
+      // TODO: Consider putting a thumbnail in the videos poster attribute
+
+      this.resources.videos.push({
+        element: videoElement,
+        x: video.xPos,
+        y: video.yPos,
+        width: video.width,
+        height: video.height,
+        rotation: video.rotation
+      });
+
+      const sourceElement = document.createElement('source');
+      sourceElement.setAttribute('src', video.videoData.files.hls);
+      sourceElement.setAttribute('type', 'application/x-mpegURL');
+      videoElement.appendChild(sourceElement);
+
+      this.videoContainer.appendChild(videoElement);
+      window.videojs(videoElement, {
+        'loop': true,
+        'autoplay': true,
+        'preload': 'auto'
+      });
+      videoElement.play();
+      videoElement.addEventListener('suspend', this.showControls);
+      videoElement.addEventListener('playing', this.hideControls);
+      // Add a listner on error as well ...
+    });
+    this.redraw();
+  }
+
+  play() {
+    // Loop though all the video elements and start playback
+    this.resources.videos.forEach(video => {
+      video.element.play();
+    });
+  }
+
+  showControls() {
+    this.setState({
+      controlsVisible: true
+    });
+  }
+
+  hideControls() {
+    this.setState({
+      controlsVisible: false
+    });
+  }
+
+  backgroundPosition() {
+    const background = this.resources.background;
+    const canvas = this.canvas;
+
+    const canvasRatio = canvas.width / canvas.height;
+    const backgroundRatio = background.width / background.height;
+
+    if(canvasRatio > backgroundRatio) {
+      const height = canvas.height;
+      const width = canvas.height * backgroundRatio;
+      return {
+        height,
+        width,
+        x: (canvas.width - width) / 2,
+        y: 0
+      }
+    } else {
+      const height = canvas.width / backgroundRatio;
+      const width = canvas.width;
+      return {
+        height,
+        width,
+        x: 0,
+        y: (canvas.height - height) / 2
+      }
+    }
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.resized);
     this.resized();
@@ -134,15 +168,28 @@ class CollageCanvas extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resized);
+    this.resources.videos.forEach(video => {
+      video.element.removeEventListener('suspend', this.showControls);
+      video.element.removeEventListener('playing', this.hideControls);
+    });
   }
 
   render() {
+    const controlsClassNames = [
+      'CollageCanvas__controls'
+    ];
+    if(this.state.controlsVisible) {
+      controlsClassNames.push('CollageCanvas__controls--visible');
+    }
     return (
       <div className="CollageCanvas">
         <canvas className="CollageCanvas__canvas"
           ref={(e) => { this.canvas = e; }} />
         <div className="CollageCanvas__video-container"
           ref={(e) => { this.videoContainer = e; }} />
+        <div className={controlsClassNames.join(' ')} onClick={this.play}>
+          Afspil
+        </div>
       </div>
     );
   }

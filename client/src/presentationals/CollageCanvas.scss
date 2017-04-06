@@ -1,4 +1,5 @@
 $canvas-background: #111;
+$overlay-background: rgba(0, 0, 0, .5);
 
 .CollageCanvas__canvas {
   background: $canvas-background;
@@ -9,4 +10,16 @@ $canvas-background: #111;
 
 .CollageCanvas__video-container {
   display: none;
+}
+
+.CollageCanvas__controls {
+  background: $overlay-background;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+
+  &--visible {
+    opacity: 1;
+  }
 }
