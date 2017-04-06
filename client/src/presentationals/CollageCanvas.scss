@@ -1,6 +1,4 @@
-$canvas-background: #111;
 $overlay-background: rgba(0, 0, 0, .5);
-$controls-font-color: #fff;
 
 .CollageCanvas {
   height: 100%;
@@ -17,7 +15,7 @@ $controls-font-color: #fff;
   }
 
   &__canvas {
-    background: $canvas-background;
+    background: $background-color;
   }
 
   &__video-container {
@@ -37,7 +35,7 @@ $controls-font-color: #fff;
     align-items: center;
     background: $overlay-background;
     background-image: url('./../svgs/dot-grid.svg');
-    color: $controls-font-color;
+    color: $font-color;
     display: none;
     justify-content: center;
     opacity: 0;
