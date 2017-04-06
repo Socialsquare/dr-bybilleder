@@ -2,6 +2,13 @@ import React, { Component, PropTypes } from 'react';
 
 import './CollageCanvas.css';
 
+const generateStyle = attributes => {
+  return Object.keys(attributes).map(key => {
+    const value = attributes[key];
+    return key + ':' + value + ';';
+  }).join('');
+};
+
 class CollageCanvas extends Component {
 
   resources = {};
@@ -19,6 +26,7 @@ class CollageCanvas extends Component {
   }
 
   redraw() {
+    const devicePixelRatio = window.devicePixelRatio || 1;
     // Initiate the canvas
     const ctx = this.canvas.getContext('2d');
 
@@ -37,11 +45,19 @@ class CollageCanvas extends Component {
           const height = video.height * background.height;
           const x = background.x + video.x * background.width;
           const y = background.y + video.y * background.height;
+
+          const style = {
+            width: width + 'px',
+            height: height + 'px'
+          };
+          video.player.setAttribute('style', generateStyle(style));
+          /*
           ctx.translate(x, y);
           ctx.rotate(video.rotation);
           ctx.drawImage(video.element, 0, 0, width, height);
           ctx.rotate(-video.rotation);
           ctx.translate(-x, -y);
+          */
         });
       }
     }
@@ -71,10 +87,26 @@ class CollageCanvas extends Component {
     this.resources.videos = [];
     collage.videos.forEach(video => {
       const videoElement = document.createElement('video');
+      const videoClasses = 'video-js vjs-default-skin CollageCanvas__video';
+      videoElement.setAttribute('class', videoClasses);
       // TODO: Consider putting a thumbnail in the videos poster attribute
+
+      const sourceElement = document.createElement('source');
+      sourceElement.setAttribute('src', video.videoData.files.hls);
+      sourceElement.setAttribute('type', 'video/mp4');
+      // sourceElement.setAttribute('type', 'application/x-mpegURL');
+      videoElement.appendChild(sourceElement);
+
+      this.videoContainer.appendChild(videoElement);
+      const player = window.videojs(videoElement, {
+        'loop': true,
+        'autoplay': true,
+        'preload': 'auto'
+      });
 
       this.resources.videos.push({
         element: videoElement,
+        player,
         x: video.xPos,
         y: video.yPos,
         width: video.width,
@@ -82,18 +114,6 @@ class CollageCanvas extends Component {
         rotation: video.rotation
       });
 
-      const sourceElement = document.createElement('source');
-      sourceElement.setAttribute('src', video.videoData.files.hls);
-      sourceElement.setAttribute('type', 'application/x-mpegURL');
-      videoElement.appendChild(sourceElement);
-
-      this.videoContainer.appendChild(videoElement);
-      window.videojs(videoElement, {
-        'loop': true,
-        'autoplay': true,
-        'preload': 'auto'
-      });
-      videoElement.play();
       videoElement.addEventListener('suspend', this.showControls);
       videoElement.addEventListener('playing', this.hideControls);
       // Add a listner on error as well ...
@@ -153,11 +173,13 @@ class CollageCanvas extends Component {
     this.resized();
     this.loadResources();
     // Redraw forever
+    /*
     const step = () => {
       this.redraw();
       window.requestAnimationFrame(step);
     };
     step();
+    */
   }
 
   componentDidUpdate(prevProps, prevState) {
