@@ -16,6 +16,36 @@ const addSource = (element, url, type) => {
   element.appendChild(sourceElement);
 };
 
+const fullscreen = {
+  is: () => {
+    const fullscreenElement = document.fullscreenElement ||
+                              document.webkitFullscreenElement ||
+                              document.mozFullScreenElement ||
+                              document.msFullscreenElement;
+    return !!fullscreenElement;
+  },
+  request: e => {
+    const req = e.requestFullscreen ||
+                e.msRequestFullscreen ||
+                e.mozRequestFullScreen ||
+                e.webkitRequestFullscreen;
+    if(req) {
+      req.call(e);
+    }
+  },
+  exit: () => {
+    if (document.exitFullscreen) {
+    	document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+    	document.webkitExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+    	document.mozCancelFullScreen();
+    } else if (document.msExitFullscreen) {
+    	document.msExitFullscreen();
+    }
+  }
+};
+
 class CollageCanvas extends Component {
 
   resources = {};
@@ -28,6 +58,7 @@ class CollageCanvas extends Component {
     super();
     this.resized = this.resized.bind(this);
     this.play = this.play.bind(this);
+    this.fullscreen = this.fullscreen.bind(this);
     this.showControls = this.showControls.bind(this);
     this.hideControls = this.hideControls.bind(this);
   }
@@ -146,6 +177,14 @@ class CollageCanvas extends Component {
     });
   }
 
+  fullscreen() {
+    if (!fullscreen.is()) {
+      fullscreen.request(this.everything);
+    } else {
+      fullscreen.exit();
+    }
+  }
+
   showControls() {
     this.setState({
       controlsVisible: true
@@ -229,6 +268,10 @@ class CollageCanvas extends Component {
           ref={(e) => { this.videoContainer = e; }} />
         <div className={controlsClassNames.join(' ')} onClick={this.play}>
           Afspil
+        </div>
+        <div className="CollageCanvas__fullscreen-btn"
+          onClick={this.fullscreen}>
+          Fullscreen
         </div>
       </div>
     );
