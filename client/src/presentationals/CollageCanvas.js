@@ -43,6 +43,18 @@ const fullscreen = {
     } else if (document.msExitFullscreen) {
     	document.msExitFullscreen();
     }
+  },
+  addListener: listener => {
+    document.addEventListener('fullscreenchange', listener);
+    document.addEventListener('webkitfullscreenchange', listener);
+    document.addEventListener('mozfullscreenchange', listener);
+    document.addEventListener('MSFullscreenChange', listener);
+  },
+  removeListener: listener => {
+    document.removeEventListener('fullscreenchange', listener);
+    document.removeEventListener('webkitfullscreenchange', listener);
+    document.removeEventListener('mozfullscreenchange', listener);
+    document.removeEventListener('MSFullscreenChange', listener);
   }
 };
 
@@ -61,6 +73,7 @@ class CollageCanvas extends Component {
     this.fullscreen = this.fullscreen.bind(this);
     this.showControls = this.showControls.bind(this);
     this.hideControls = this.hideControls.bind(this);
+    this.redraw = this.redraw.bind(this);
   }
 
   redraw() {
@@ -99,13 +112,6 @@ class CollageCanvas extends Component {
             };
             video.player.setAttribute('style', generateStyle(style));
           }
-          /*
-          ctx.translate(x, y);
-          ctx.rotate(video.rotation);
-          ctx.drawImage(video.element, 0, 0, width, height);
-          ctx.rotate(-video.rotation);
-          ctx.translate(-x, -y);
-          */
         });
       }
     }
@@ -236,14 +242,8 @@ class CollageCanvas extends Component {
     window.addEventListener('resize', this.resized);
     this.resized();
     this.loadResources();
-    // Redraw forever
-    /*
-    const step = () => {
-      this.redraw();
-      window.requestAnimationFrame(step);
-    };
-    step();
-    */
+    // Redraw when fullscreen changes
+    fullscreen.addListener(this.redraw);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -258,6 +258,8 @@ class CollageCanvas extends Component {
       video.player.off('suspend');
       video.player.off('play');
     });
+    // Redraw when fullscreen changes
+    fullscreen.removeListener(this.redraw);
   }
 
   render() {
