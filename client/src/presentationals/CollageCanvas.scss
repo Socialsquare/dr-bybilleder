@@ -1,29 +1,49 @@
 $canvas-background: #111;
 $overlay-background: rgba(0, 0, 0, .5);
 
-.CollageCanvas__canvas,
-.CollageCanvas__video-container,
-.CollageCanvas__controls {
+.CollageCanvas {
   height: 100%;
   position: absolute;
   width: 100%;
-}
 
-.CollageCanvas__canvas {
-  background: $canvas-background;
-}
+  &__canvas,
+  &__video-container,
+  &__controls {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+  }
 
-.CollageCanvas__video {
-  position: absolute;
-}
+  &__canvas {
+    background: $canvas-background;
+  }
 
-.CollageCanvas__controls {
-  background: $overlay-background;
-  display: none;
-  opacity: 0;
+  &__video {
+    position: absolute;
+  }
 
-  &--visible {
+  &__controls {
+    align-items: center;
+    background: $overlay-background;
+    display: none;
+    justify-content: center;
+    opacity: 0;
+
+    &--visible {
+      display: flex;
+      opacity: 1;
+    }
+  }
+
+  &__play-btn {
     display: block;
-    opacity: 1;
+  }
+
+  &__fullscreen-btn {
+    bottom: 0;
+    height: 7vmin;
+    position: absolute;
+    right: 0;
+    width: 7vmin;
   }
 }

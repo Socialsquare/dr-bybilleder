@@ -134,16 +134,16 @@ class CollageCanvas extends Component {
     // The videos
     this.resources.videos = [];
     collage.videos.forEach(video => {
-      const videoElement = document.createElement('video');
-      const videoClasses = 'video-js vjs-default-skin CollageCanvas__video';
-      videoElement.setAttribute('class', videoClasses);
+      const element = document.createElement('video');
+      const classes = 'video-js vjs-default-skin CollageCanvas__video';
+      element.setAttribute('class', classes);
       // TODO: Consider putting a thumbnail in the videos poster attribute
-      addSource(videoElement, video.videoData.files.hls, 'application/x-mpegURL');
-      addSource(videoElement, video.videoData.files.rtmpMpeg4, 'rtmp/mp4');
-      addSource(videoElement, video.videoData.files.rtmpFlv, 'rtmp/flv');
+      addSource(element, video.videoData.files.hls, 'application/x-mpegURL');
+      addSource(element, video.videoData.files.rtmpMpeg4, 'rtmp/mp4');
+      addSource(element, video.videoData.files.rtmpFlv, 'rtmp/flv');
 
-      this.videoContainer.appendChild(videoElement);
-      const player = window.videojs(videoElement, {
+      this.videoContainer.appendChild(element);
+      const player = window.videojs(element, {
         controls: 'auto',
         loop: true,
         autoplay: true,
@@ -154,7 +154,7 @@ class CollageCanvas extends Component {
       });
 
       this.resources.videos.push({
-        element: videoElement,
+        element,
         player,
         x: video.xPos,
         y: video.yPos,
@@ -163,7 +163,11 @@ class CollageCanvas extends Component {
         rotation: video.rotation
       });
 
-      player.on('suspend', this.showControls);
+      player.on('suspend', (e) => {
+        if(player.paused()) {
+          this.showControls();
+        }
+      });
       player.on('play', this.hideControls);
       // Add a listner on error as well ...
     });
@@ -173,6 +177,9 @@ class CollageCanvas extends Component {
   play() {
     // Loop though all the video elements and start playback
     this.resources.videos.forEach(video => {
+      if(!video.player.paused()) {
+        video.player.pause();
+      }
       video.player.play();
     });
   }
@@ -248,8 +255,8 @@ class CollageCanvas extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resized);
     this.resources.videos.forEach(video => {
-      video.player.off('suspend', this.showControls);
-      video.player.off('play', this.hideControls);
+      video.player.off('suspend');
+      video.player.off('play');
     });
   }
 
@@ -261,13 +268,17 @@ class CollageCanvas extends Component {
       controlsClassNames.push('CollageCanvas__controls--visible');
     }
     return (
-      <div className="CollageCanvas">
+      <div className="CollageCanvas"
+        ref={(e) => { this.everything = e; }}>
         <canvas className="CollageCanvas__canvas"
           ref={(e) => { this.canvas = e; }} />
         <div className="CollageCanvas__video-container"
           ref={(e) => { this.videoContainer = e; }} />
-        <div className={controlsClassNames.join(' ')} onClick={this.play}>
-          Afspil
+        <div className={controlsClassNames.join(' ')}
+          onClick={this.play}>
+          <div className="CollageCanvas__play-btn">
+            Afspil
+          </div>
         </div>
         <div className="CollageCanvas__fullscreen-btn"
           onClick={this.fullscreen}>
