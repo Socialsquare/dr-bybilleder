@@ -1,5 +1,6 @@
 $canvas-background: #111;
 $overlay-background: rgba(0, 0, 0, .5);
+$controls-font-color: #fff;
 
 .CollageCanvas {
   height: 100%;
@@ -19,6 +20,15 @@ $overlay-background: rgba(0, 0, 0, .5);
     background: $canvas-background;
   }
 
+  &__video-container {
+    opacity: 0;
+    transition: .25s;
+
+    &--visible {
+      opacity: 1;
+    }
+  }
+
   &__video {
     position: absolute;
   }
@@ -26,6 +36,8 @@ $overlay-background: rgba(0, 0, 0, .5);
   &__controls {
     align-items: center;
     background: $overlay-background;
+    background-image: url('./../svgs/dot-grid.svg');
+    color: $controls-font-color;
     display: none;
     justify-content: center;
     opacity: 0;
@@ -37,15 +49,26 @@ $overlay-background: rgba(0, 0, 0, .5);
   }
 
   &__play-btn {
-    display: block;
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   &__fullscreen-btn {
     bottom: 0;
-    height: 7vmin;
+    cursor: pointer;
+    height: 8vmin;
     overflow: hidden;
+    padding: 2vmin;
     position: absolute;
     right: 0;
-    width: 7vmin;
+    width: 8vmin;
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
   }
 }

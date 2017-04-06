@@ -58,6 +58,11 @@ const fullscreen = {
   }
 };
 
+// import DogGridSvg from '../svgs/dot-grid.svg';
+import PlaySvg from '../svgs/play.svg';
+import FullscreenSvg from '../svgs/fullscreen.svg';
+import FullscreenOffSvg from '../svgs/fullscreen-off.svg';
+
 class CollageCanvas extends Component {
 
   resources = {};
@@ -134,6 +139,8 @@ class CollageCanvas extends Component {
     backgroundElement.addEventListener('load', () => {
       // When loaded, add this as a resource
       this.resources.background = backgroundElement;
+      // Add a class to display the videos
+      this.videoContainer.className += ' CollageCanvas__video-container--visible';
       this.redraw();
     });
     backgroundElement.src = collage.image;
@@ -154,6 +161,7 @@ class CollageCanvas extends Component {
         loop: true,
         autoplay: true,
         preload: 'auto',
+        mute: true,
         bigPlayButton: false,
         poster: video.videoData.files.thumbnail,
         techOrder: ['html5', 'flash']
@@ -196,6 +204,10 @@ class CollageCanvas extends Component {
     } else {
       fullscreen.exit();
     }
+    // Update the state
+    this.setState({
+      fullscreen: fullscreen.is()
+    });
   }
 
   showControls() {
@@ -276,15 +288,20 @@ class CollageCanvas extends Component {
           ref={(e) => { this.canvas = e; }} />
         <div className="CollageCanvas__video-container"
           ref={(e) => { this.videoContainer = e; }} />
+        <div className="CollageCanvas__fullscreen-btn"
+          onClick={this.fullscreen}>
+          {this.state.fullscreen ? (
+            <img src={FullscreenOffSvg} alt="Luk fuld skærm" />
+          ) : (
+            <img src={FullscreenSvg} alt="Åbn i fuld skærm" />
+          )}
+        </div>
         <div className={controlsClassNames.join(' ')}
           onClick={this.play}>
           <div className="CollageCanvas__play-btn">
-            Afspil
+            <h1>Afspil bybillede</h1>
+            <img src={PlaySvg} alt="Afspil" />
           </div>
-        </div>
-        <div className="CollageCanvas__fullscreen-btn"
-          onClick={this.fullscreen}>
-          Fullscreen
         </div>
       </div>
     );
