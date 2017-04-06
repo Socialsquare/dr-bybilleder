@@ -19,9 +19,11 @@ $overlay-background: rgba(0, 0, 0, .5);
 
 .CollageCanvas__controls {
   background: $overlay-background;
+  display: none;
   opacity: 0;
 
   &--visible {
+    display: block;
     opacity: 1;
   }
 }

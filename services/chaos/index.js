@@ -70,6 +70,14 @@ const chaos = {
           result.rtmpMpeg4 = mpegFile.URL;
         }
 
+        const flvFile = files.find(file => {
+          const extension = file.Filename.substring(file.Filename.length-3);
+          return extension === 'flv';
+        });
+        if(flvFile) {
+          result.rtmpFlv = flvFile.URL;
+        }
+
         return result;
       } else {
         throw new Error('More than a single object returned, got ' + count);

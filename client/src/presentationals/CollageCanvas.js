@@ -9,6 +9,13 @@ const generateStyle = attributes => {
   }).join('');
 };
 
+const addSource = (element, url, type) => {
+  const sourceElement = document.createElement('source');
+  sourceElement.setAttribute('src', url);
+  sourceElement.setAttribute('type', type);
+  element.appendChild(sourceElement);
+};
+
 class CollageCanvas extends Component {
 
   resources = {};
@@ -45,12 +52,22 @@ class CollageCanvas extends Component {
           const height = video.height * background.height;
           const x = background.x + video.x * background.width;
           const y = background.y + video.y * background.height;
+          const rotationDeg = video.rotation / (2 * Math.PI) * 360;
 
-          const style = {
-            width: width + 'px',
-            height: height + 'px'
-          };
-          video.player.setAttribute('style', generateStyle(style));
+          if(video.player.isFullscreen()) {
+            // Make sure full-screening is not distroyed by a strange position.
+            video.player.setAttribute('style', '');
+          } else {
+            const style = {
+              width: width / devicePixelRatio + 'px',
+              height: height / devicePixelRatio + 'px',
+              left: x / devicePixelRatio + 'px',
+              top: y / devicePixelRatio + 'px',
+              transform: 'rotate(' + rotationDeg + 'deg)',
+              'transform-origin': '0 0' // Rotate around the upper left corner
+            };
+            video.player.setAttribute('style', generateStyle(style));
+          }
           /*
           ctx.translate(x, y);
           ctx.rotate(video.rotation);
@@ -90,18 +107,19 @@ class CollageCanvas extends Component {
       const videoClasses = 'video-js vjs-default-skin CollageCanvas__video';
       videoElement.setAttribute('class', videoClasses);
       // TODO: Consider putting a thumbnail in the videos poster attribute
-
-      const sourceElement = document.createElement('source');
-      sourceElement.setAttribute('src', video.videoData.files.hls);
-      sourceElement.setAttribute('type', 'video/mp4');
-      // sourceElement.setAttribute('type', 'application/x-mpegURL');
-      videoElement.appendChild(sourceElement);
+      addSource(videoElement, video.videoData.files.hls, 'application/x-mpegURL');
+      addSource(videoElement, video.videoData.files.rtmpMpeg4, 'rtmp/mp4');
+      addSource(videoElement, video.videoData.files.rtmpFlv, 'rtmp/flv');
 
       this.videoContainer.appendChild(videoElement);
       const player = window.videojs(videoElement, {
-        'loop': true,
-        'autoplay': true,
-        'preload': 'auto'
+        controls: 'auto',
+        loop: true,
+        autoplay: true,
+        preload: 'auto',
+        bigPlayButton: false,
+        poster: video.videoData.files.thumbnail,
+        techOrder: ['html5', 'flash']
       });
 
       this.resources.videos.push({
@@ -114,8 +132,8 @@ class CollageCanvas extends Component {
         rotation: video.rotation
       });
 
-      videoElement.addEventListener('suspend', this.showControls);
-      videoElement.addEventListener('playing', this.hideControls);
+      player.on('suspend', this.showControls);
+      player.on('play', this.hideControls);
       // Add a listner on error as well ...
     });
     this.redraw();
@@ -124,7 +142,7 @@ class CollageCanvas extends Component {
   play() {
     // Loop though all the video elements and start playback
     this.resources.videos.forEach(video => {
-      video.element.play();
+      video.player.play();
     });
   }
 
@@ -191,8 +209,8 @@ class CollageCanvas extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resized);
     this.resources.videos.forEach(video => {
-      video.element.removeEventListener('suspend', this.showControls);
-      video.element.removeEventListener('playing', this.hideControls);
+      video.player.off('suspend', this.showControls);
+      video.player.off('play', this.hideControls);
     });
   }
 
