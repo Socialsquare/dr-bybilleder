@@ -163,6 +163,13 @@ class CollageCanvas extends Component {
         preload: 'auto',
         muted: true,
         bigPlayButton: false,
+        controlBar: {
+          children: {
+            muteToggle: true,
+            progressControl: true,
+            fullscreenToggle: true
+          }
+        },
         poster: video.videoData.files.thumbnail,
         techOrder: ['html5', 'flash']
       });
