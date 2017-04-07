@@ -68,7 +68,8 @@ class CollageCanvas extends Component {
   resources = {};
 
   state = {
-    controlsVisible: false
+    controlsVisible: false,
+    facebookHref: 'http://www.facebook.com/sharer.php?u='
   };
 
   constructor() {
@@ -280,6 +281,11 @@ class CollageCanvas extends Component {
     this.loadResources();
     // Redraw when fullscreen changes
     fullscreen.addListener(this.redraw);
+    // Set the facebook url to share the current URL
+    const url = location.href;
+    this.setState({
+      facebookHref: 'http://www.facebook.com/sharer.php?u=' + url
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -307,6 +313,10 @@ class CollageCanvas extends Component {
           ref={(e) => { this.canvas = e; }} />
         <div className="CollageCanvas__video-container"
           ref={(e) => { this.videoContainer = e; }} />
+        <a className="CollageCanvas__facebook-btn"
+          href={this.state.facebookHref}>
+          Del på Facebook
+        </a>
         <div className="CollageCanvas__fullscreen-btn"
           onClick={this.fullscreen}>
           {this.state.fullscreen ? (

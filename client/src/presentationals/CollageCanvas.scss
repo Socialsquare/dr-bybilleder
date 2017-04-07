@@ -1,7 +1,5 @@
 @import '../variables';
 
-$overlay-background: rgba(0, 0, 0, .5);
-
 .CollageCanvas {
   height: 100%;
   overflow: hidden;
@@ -17,7 +15,8 @@ $overlay-background: rgba(0, 0, 0, .5);
   }
 
   &__canvas {
-    background: $background-color;
+    background: $background-color-dark;
+    color: $font-color-on-dark;
   }
 
   &__video-container {
@@ -38,15 +37,34 @@ $overlay-background: rgba(0, 0, 0, .5);
     }
   }
 
+  &__facebook-btn,
+  &__fullscreen-btn {
+    height: 6vmin;
+  }
+
+  &__facebook-btn {
+    align-items: center;
+    bottom: 0;
+    color: $font-color-on-dark;
+    display: flex;
+    font-family: 'GT Walsheim Pro Black';
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: bold;
+    left: 0;
+    overflow: hidden;
+    padding: 2vmin;
+    position: absolute;
+  }
+
   &__fullscreen-btn {
     bottom: 0;
     cursor: pointer;
-    height: 8vmin;
     overflow: hidden;
     padding: 2vmin;
     position: absolute;
     right: 0;
-    width: 8vmin;
+    width: 10vmin;
 
     img {
       height: 100%;
