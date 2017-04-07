@@ -15,16 +15,14 @@
 }
 
 .MissingCollage {
+  align-items: center;
   background: $background-color;
   // background-image: url('./../svgs/dot-grid.svg');
   color: $font-color;
   display: flex;
-  flex-direction: column;
   height: 100%;
-  justify-content: center;
   left: 0;
   position: absolute;
-  text-align: center;
   top: 0;
   width: 100%;
 
@@ -34,7 +32,6 @@
     border-right: .15rem solid $font-color;
     overflow: hidden;
     padding: 5rem 0;
-    position: absolute;
     width: 52vw;
   }
 
