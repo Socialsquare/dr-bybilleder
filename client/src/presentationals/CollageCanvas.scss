@@ -33,29 +33,6 @@ $overlay-background: rgba(0, 0, 0, .5);
     position: absolute;
   }
 
-  &__controls {
-    align-items: center;
-    background: $overlay-background;
-    background-image: url('./../svgs/dot-grid.svg');
-    color: $font-color;
-    display: none;
-    justify-content: center;
-    opacity: 0;
-
-    &--visible {
-      display: flex;
-      opacity: 1;
-    }
-  }
-
-  &__play-btn {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
   &__fullscreen-btn {
     bottom: 0;
     cursor: pointer;

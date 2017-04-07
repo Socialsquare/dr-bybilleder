@@ -165,8 +165,6 @@ class CollageCanvas extends Component {
         bigPlayButton: false,
         controlBar: {
           children: {
-            muteToggle: true,
-            progressControl: true,
             fullscreenToggle: true
           }
         },
@@ -192,14 +190,15 @@ class CollageCanvas extends Component {
       });
       // When the video starts playing the large collage control get hidden.
       player.on('play', this.hideControls);
-      // When the volume changes
-      player.on('volumechange', e => {
-        if(!player.muted()) {
-          // Loop through all other players and mute them
-          this.muteAllPlayers(player);
-        }
+      player.on('useractive', () => {
+        // Mute all other players
+        this.muteAllPlayers(player);
+        // unmute
+        player.muted(false);
+        // and start playing this
+        player.play();
       });
-      // Add a listner on error as well ...
+      // TODO: Add a listner on error as well ...
     });
     this.redraw();
   }
@@ -300,12 +299,6 @@ class CollageCanvas extends Component {
   }
 
   render() {
-    const controlsClassNames = [
-      'CollageCanvas__controls'
-    ];
-    if(this.state.controlsVisible) {
-      controlsClassNames.push('CollageCanvas__controls--visible');
-    }
     return (
       <div className="CollageCanvas"
         ref={(e) => { this.everything = e; }}>
@@ -320,13 +313,6 @@ class CollageCanvas extends Component {
           ) : (
             <img src={FullscreenSvg} alt="Åbn i fuld skærm" />
           )}
-        </div>
-        <div className={controlsClassNames.join(' ')}
-          onClick={this.play}>
-          <div className="CollageCanvas__play-btn">
-            <h1>Afspil bybillede</h1>
-            <img src={PlaySvg} alt="Afspil" />
-          </div>
         </div>
       </div>
     );
