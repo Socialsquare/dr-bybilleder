@@ -163,6 +163,7 @@ class CollageCanvas extends Component {
         preload: 'auto',
         muted: true,
         bigPlayButton: false,
+        inactivityTimeout: 500,
         controlBar: {
           children: {
             fullscreenToggle: true
