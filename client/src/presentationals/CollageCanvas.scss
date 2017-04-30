@@ -34,12 +34,14 @@
     // Disables pause on click when the browser is native
     .vjs-tech {
       pointer-events: none;
+    &:focus {
+      outline: none;
     }
   }
 
   &__facebook-btn,
   &__fullscreen-btn {
-    height: 6vmin;
+    height: 2rem;
   }
 
   &__facebook-btn {
@@ -53,7 +55,7 @@
     font-weight: bold;
     left: 0;
     overflow: hidden;
-    padding: 2vmin;
+    padding: .5rem;
     position: absolute;
   }
 
@@ -61,10 +63,10 @@
     bottom: 0;
     cursor: pointer;
     overflow: hidden;
-    padding: 2vmin;
+    padding: .5rem;
     position: absolute;
     right: 0;
-    width: 10vmin;
+    width: 3rem;
 
     img {
       height: 100%;
