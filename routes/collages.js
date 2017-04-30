@@ -7,6 +7,8 @@ const chaos = require('../services/chaos');
 const mongoose = require('../services/mongoose');
 const Collage = mongoose.model('Collage');
 
+const index = require('../index.js');
+
 const generateMpeg4Url = (req, url) => {
   const host = req.get('x-forwarded-host') || req.get('host');
   const encodedUrl = new Buffer(url).toString('base64');
@@ -65,9 +67,13 @@ router.delete('/:id', function(req, res, next) {
 });
 
 router.get('/collages', function(req, res, next) {
-  Collage.find().then(collages => {
-    res.json(collages);
-  });
+  if(req.accepts(['html', 'json']) === 'json') {
+    Collage.find().then(collages => {
+      res.json(collages);
+    });
+  } else {
+    next();
+  }
 });
 
 router.get('/:id', function(req, res, next) {
@@ -77,8 +83,18 @@ router.get('/:id', function(req, res, next) {
       return deriveVideoUrls(req, collage.toObject());
     }
   }).then(collage => {
-    res.json(collage);
-  }, next);
+    if(req.accepts(['html', 'json']) === 'json') {
+      res.json(collage);
+    } else {
+      const html = index.appendMetatags({
+        'og:title': '',
+        'og:image': '',
+        'og:description': '',
+        'og:url': ''
+      });
+      res.send(html);
+    }
+  }, next).then(null, next);
 });
 
 module.exports = router;
