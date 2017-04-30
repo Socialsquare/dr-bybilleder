@@ -2,9 +2,33 @@ import React, { Component, PropTypes } from 'react';
 
 import './CollageCanvas.css';
 
-const generateStyle = attributes => {
-  return Object.keys(attributes).map(key => {
+const CSS_PREFIXES = {
+  'transform': ['-webkit-transform', '-ms-transform']
+};
+
+const generatePrefixes = attributes => {
+  const result = {};
+  // Loop through the attributes
+  Object.keys(attributes).forEach(key => {
     const value = attributes[key];
+    // Add the original value to the result
+    result[key] = value;
+    // If prefixes exists
+    if(key in CSS_PREFIXES) {
+      const prefixes = CSS_PREFIXES[key];
+      // Add values for each prefix to the attributes
+      prefixes.forEach(prefix => {
+        result[prefix] = value;
+      });
+    }
+  });
+  return result;
+};
+
+const generateStyle = attributes => {
+  const prefixedAttributes = generatePrefixes(attributes);
+  return Object.keys(prefixedAttributes).map(key => {
+    const value = prefixedAttributes[key];
     return key + ':' + value + ';';
   }).join('');
 };
@@ -59,7 +83,7 @@ const fullscreen = {
 };
 
 // import DogGridSvg from '../svgs/dot-grid.svg';
-import PlaySvg from '../svgs/play.svg';
+// import PlaySvg from '../svgs/play.svg';
 import FullscreenSvg from '../svgs/fullscreen.svg';
 import FullscreenOffSvg from '../svgs/fullscreen-off.svg';
 
@@ -165,11 +189,6 @@ class CollageCanvas extends Component {
         muted: true,
         bigPlayButton: false,
         inactivityTimeout: 500,
-        controlBar: {
-          children: {
-            fullscreenToggle: true
-          }
-        },
         poster: video.videoData.files.thumbnail,
         techOrder: ['html5', 'flash']
       });
@@ -193,12 +212,12 @@ class CollageCanvas extends Component {
       // When the video starts playing the large collage control get hidden.
       player.on('play', this.hideControls);
       player.on('useractive', () => {
-        // Mute all other players
-        this.muteAllPlayers(player);
-        // unmute
-        player.muted(false);
         // and start playing this
         player.play();
+        // unmute
+        player.muted(false);
+        // Mute all other players
+        this.muteAllPlayers(player);
       });
       // TODO: Add a listner on error as well ...
     });
