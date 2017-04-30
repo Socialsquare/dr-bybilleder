@@ -27,13 +27,17 @@ app.use(bodyParser.json({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// Load the index middleware
+// app.use(require('./index.js').middleware);
+
 // Serve static files from the clients build folder
 const CLIENT_BUILD_PATH = path.join(__dirname, 'client', 'build');
 assert.ok(fs.existsSync(CLIENT_BUILD_PATH), 'Build the client first');
 app.use(express.static(CLIENT_BUILD_PATH));
 
+app.use('/', collages);
+
 // Instead of 404, render the clients index.html
-const CLIENT_INDEX_PATH = path.join(CLIENT_BUILD_PATH, 'index.html');
 app.use(function(req, res, next) {
   if(req.accepts(['html', 'json']) === 'html') {
     res.sendFile(CLIENT_INDEX_PATH);
@@ -42,24 +46,14 @@ app.use(function(req, res, next) {
   }
 });
 
-app.use('/', collages);
-
 // error handler
 app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   console.error(err);
-
-  if(req.accepts(['html', 'json']) === 'json') {
-    res.json({
-      message: err.message
-    });
-  } else {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-    res.render('error');
-  }
+  res.json({
+    message: err.message
+  });
 });
 
 module.exports = app;
