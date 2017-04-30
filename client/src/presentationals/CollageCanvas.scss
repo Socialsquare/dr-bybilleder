@@ -33,7 +33,9 @@
 
     // Disables pause on click when the browser is native
     .vjs-tech {
-      pointer-events: none;
+      // pointer-events: none;
+    }
+
     &:focus {
       outline: none;
     }
