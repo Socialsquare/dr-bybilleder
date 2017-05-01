@@ -181,6 +181,7 @@ class CollageCanvas extends Component {
       addSource(element, video.videoData.files.rtmpFlv, 'rtmp/flv');
 
       this.videoContainer.appendChild(element);
+      // Initialize the videojs player
       const player = window.videojs(element, {
         controls: 'auto',
         loop: true,
@@ -190,7 +191,13 @@ class CollageCanvas extends Component {
         bigPlayButton: false,
         inactivityTimeout: 500,
         poster: video.videoData.files.thumbnail,
-        techOrder: ['html5', 'flash']
+        techOrder: ['html5', 'flash'],
+        controlBar: {
+          playToggle: false,
+          progressControl: false,
+          remainingTimeDisplay: false,
+          fullscreenToggle: false
+        }
       });
 
       this.resources.videos.push({
