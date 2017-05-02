@@ -82,6 +82,9 @@ router.get('/:id', function(req, res, next) {
     }
   }).then(collage => {
     if(req.accepts(['html', 'json']) === 'json') {
+      // Disable caching of the JSON to prevent browsers from showing JSON
+      // instead of a cached HTML version of this route
+      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
       res.json(collage);
     } else {
       const html = index.appendMetatags({
