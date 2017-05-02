@@ -9,10 +9,9 @@ const Collage = mongoose.model('Collage');
 
 const index = require('../index.js');
 
-const generateMpeg4Url = (req, url) => {
+const absoluteUrl = (req, path) => {
   const host = req.get('x-forwarded-host') || req.get('host');
-  const encodedUrl = new Buffer(url).toString('base64');
-  return req.protocol + '://' + host + '/mpeg4/' + encodedUrl;
+  return req.protocol + '://' + host + path;
 };
 
 const RTMP_PATTERN = /^rtmp:\/\/vod-kulturarv\.dr\.dk\/bonanza\/mp4:bonanza\/(.+\.mp4)$/;
@@ -32,7 +31,6 @@ const deriveVideoUrls = (req, collage) => {
     return chaos.getVideoFiles(video).then(files => {
       if(files.rtmpMpeg4) {
         files.hls = generateHLSUrlFromRTMP(req, files.rtmpMpeg4);
-        files.mpeg4 = generateMpeg4Url(req, files.hls);
       }
       video.videoData.files = files;
       return video;
