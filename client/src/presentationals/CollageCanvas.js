@@ -340,7 +340,8 @@ class CollageCanvas extends Component {
         <div className="CollageCanvas__video-container"
           ref={(e) => { this.videoContainer = e; }} />
         <a className="CollageCanvas__facebook-btn"
-          href={this.state.facebookHref}>
+          href={this.state.facebookHref}
+          target="_blank">
           Del på Facebook
         </a>
         <div className="CollageCanvas__fullscreen-btn"
