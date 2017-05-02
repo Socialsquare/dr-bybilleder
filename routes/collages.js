@@ -88,10 +88,10 @@ router.get('/:id', function(req, res, next) {
       res.json(collage);
     } else {
       const html = index.appendMetatags({
-        'og:title': '',
-        'og:image': '',
+        'og:title': 'Mit bybillede fra ' + collage.eventName,
+        'og:image': collage.thumbnail,
         'og:description': '',
-        'og:url': ''
+        'og:url': absoluteUrl(req, '/' + collage.id)
       });
       res.send(html);
     }
