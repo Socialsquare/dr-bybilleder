@@ -13,14 +13,15 @@ export default class CollageCanvas extends Component {
     collage: PropTypes.object.isRequired
   }
 
+  state = {
+    background: null
+  }
+
   constructor() {
     super();
     this.resized = this.resized.bind(this);
     this.play = this.play.bind(this);
     this.fullscreen = this.fullscreen.bind(this);
-    this.state = {
-      background: null,
-    }
     this.registerChildPlayer = this.registerChildPlayer.bind(this);
     this.muteAllPlayers = this.muteAllPlayers.bind(this);
 
@@ -47,6 +48,17 @@ export default class CollageCanvas extends Component {
   registerChildPlayer(player) {
     this.players.push(player);
   }
+
+  play() {
+    // Loop though all the video elements and start playback
+    this.resources.videos.forEach(video => {
+      if(!video.player.paused()) {
+        video.player.pause();
+      }
+      video.player.play();
+    });
+  }
+
   muteAllPlayers(exceptPlayer) {
     this.players.forEach(player => {
       if(player !== exceptPlayer) {
@@ -54,6 +66,18 @@ export default class CollageCanvas extends Component {
       }
     });
   }
+
+  /* Loads the background image and all the videos that makes up the collage */
+  loadResources() {
+    const collage = this.props.collage;
+    // The background image
+    const background = document.createElement('img');
+    background.addEventListener('load', () => {
+      this.setState({ background });
+    });
+    background.src = collage.image;
+  }
+
   drawCanvas() {
     const devicePixelRatio = window.devicePixelRatio || 1;
     // Initiate the canvas
@@ -79,27 +103,6 @@ export default class CollageCanvas extends Component {
     this.setState(this.state);
   }
 
-  /* Loads the background image and all the videos that makes up the collage */
-  loadResources() {
-    const collage = this.props.collage;
-    // The background image
-    const background = document.createElement('img');
-    background.addEventListener('load', () => {
-      this.setState({ background });
-    });
-    background.src = collage.image;
-  }
-
-  play() {
-    // Loop though all the video elements and start playback
-    this.resources.videos.forEach(video => {
-      if(!video.player.paused()) {
-        video.player.pause();
-      }
-      video.player.play();
-    });
-  }
-
   fullscreen() {
     if (!fullscreen.is()) {
       fullscreen.request(this.everything);
@@ -109,14 +112,6 @@ export default class CollageCanvas extends Component {
     // Update the state
     this.setState({
       fullscreen: fullscreen.is()
-    });
-  }
-
-  muteAllPlayers(exceptPlayer) {
-    this.resources.videos.forEach(video => {
-      if(video.player !== exceptPlayer) {
-        video.player.muted(true);
-      }
     });
   }
 
