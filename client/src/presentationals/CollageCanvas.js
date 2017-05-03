@@ -8,14 +8,10 @@ import './CollageCanvas.css';
 import FullscreenSvg from '../svgs/fullscreen.svg';
 import FullscreenOffSvg from '../svgs/fullscreen-off.svg';
 
-class CollageCanvas extends Component {
-
-  resources = {};
-
-  state = {
-    controlsVisible: false,
-    facebookHref: 'http://www.facebook.com/sharer.php?u='
-  };
+export default class CollageCanvas extends Component {
+  static propTypes = {
+    collage: PropTypes.object.isRequired
+  }
 
   constructor() {
     super();
@@ -265,8 +261,3 @@ class CollageCanvas extends Component {
   }
 }
 
-CollageCanvas.propTypes = {
-  collage: PropTypes.object.isRequired
-};
-
-export default CollageCanvas;
