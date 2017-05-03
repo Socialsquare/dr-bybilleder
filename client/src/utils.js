@@ -32,13 +32,6 @@ export const generateStyle = attributes => {
 
 
 // Helper functions
-export const addSource = (element, url, type) => {
-  const sourceElement = document.createElement('source');
-  sourceElement.setAttribute('src', url);
-  sourceElement.setAttribute('type', type);
-  element.appendChild(sourceElement);
-};
-
 export const fullscreen = {
   is: () => {
     const fullscreenElement = document.fullscreenElement ||
