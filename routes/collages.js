@@ -14,24 +14,9 @@ const absoluteUrl = (req, path) => {
   return req.protocol + '://' + host + path;
 };
 
-const RTMP_PATTERN = /^rtmp:\/\/vod-kulturarv\.dr\.dk\/bonanza\/mp4:bonanza\/(.+\.mp4)$/;
-const generateHLSUrlFromRTMP = (req, url) => {
-  assert.equal(url.substring(0,4), 'rtmp', 'Expected a url over the RTMP');
-  const match = RTMP_PATTERN.exec(url);
-  if(match) {
-    const filename = match[1];
-    return 'http://vod-kulturarv.dr.dk/bonanza/mp4:bonanza/bonanza/' + filename + '/Playlist.m3u8';
-  } else {
-    throw new Error('Malformed URL');
-  }
-}
-
 const deriveVideoUrls = (req, collage) => {
   return Promise.all(collage.videos.map(video => {
     return chaos.getVideoFiles(video).then(files => {
-      if(files.rtmpMpeg4) {
-        files.hls = generateHLSUrlFromRTMP(req, files.rtmpMpeg4);
-      }
       video.videoData.files = files;
       return video;
     });
