@@ -11,6 +11,18 @@ const DEFAULT_GET_OBJECT_QUERY = {
   accessPointGUID: DEFAULT_ACCESS_POINT_GUID
 };
 
+const RTMP_PATTERN = /^rtmp:\/\/vod-kulturarv\.dr\.dk\/bonanza\/mp4:bonanza\/(.+\.mp4)$/;
+const generateHLSUrlFromRTMP = url => {
+  assert.equal(url.substring(0,4), 'rtmp', 'Expected a url over the RTMP');
+  const match = RTMP_PATTERN.exec(url);
+  if(match) {
+    const filename = match[1];
+    return 'http://vod-kulturarv.dr.dk/bonanza/mp4:bonanza/bonanza/' + filename + '/Playlist.m3u8';
+  } else {
+    throw new Error('Malformed URL');
+  }
+}
+
 const chaos = {
   request: (path, query) => {
     assert.ok(path, 'Expected a path');
@@ -62,6 +74,14 @@ const chaos = {
           result.thumbnail = thumbnailFile.URL;
         }
 
+        const hlsFile = files.find(file => {
+          return file.Token === 'HTTP Download' && file.FormatType === 'Video';
+        });
+
+        if(hlsFile) {
+          result.hls = hlsFile.URL;
+        }
+
         const mpegFile = files.find(file => {
           const extension = file.Filename.substring(file.Filename.length-3);
           return extension === 'mp4';
@@ -76,6 +96,10 @@ const chaos = {
         });
         if(flvFile) {
           result.rtmpFlv = flvFile.URL;
+        }
+
+        if(result.rtmpMpeg4 && !result.hls) {
+          result.hls = generateHLSUrlFromRTMP(result.rtmpMpeg4);
         }
 
         return result;
