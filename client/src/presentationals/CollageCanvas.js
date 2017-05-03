@@ -18,132 +18,62 @@ export default class CollageCanvas extends Component {
     this.resized = this.resized.bind(this);
     this.play = this.play.bind(this);
     this.fullscreen = this.fullscreen.bind(this);
-    this.redraw = this.redraw.bind(this);
+    this.state = {
+      background: null,
+    }
   }
 
-  redraw() {
+  componentDidMount() {
+    this.loadResources();
+    window.addEventListener('resize', this.resized);
+    this.resized();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.collage.id !== this.props.collage.id) {
+      this.loadResources();
+    }
+    this.drawCanvas();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resized);
+  }
+
+  drawCanvas() {
     const devicePixelRatio = window.devicePixelRatio || 1;
     // Initiate the canvas
     const ctx = this.canvas.getContext('2d');
 
-    if(this.resources.background) {
-      const background = this.backgroundPosition();
+    if(this.state.background) {
+      const backgroundPosition = this.backgroundPosition();
 
-      ctx.drawImage(this.resources.background,
-                    background.x,
-                    background.y,
-                    background.width,
-                    background.height);
-
-      if(this.resources.videos) {
-        this.resources.videos.forEach(video => {
-          const width = video.width * background.width;
-          const height = video.height * background.height;
-          const x = background.x + video.x * background.width;
-          const y = background.y + video.y * background.height;
-          const rotationDeg = video.rotation / (2 * Math.PI) * 360;
-
-          if(video.player.isFullscreen()) {
-            // Make sure full-screening is not distroyed by a strange position.
-            video.player.setAttribute('style', '');
-          } else {
-            const style = {
-              width: width / devicePixelRatio + 'px',
-              height: height / devicePixelRatio + 'px',
-              left: x / devicePixelRatio + 'px',
-              top: y / devicePixelRatio + 'px',
-              transform: 'rotate(' + rotationDeg + 'deg)',
-              'transform-origin': '0 0' // Rotate around the upper left corner
-            };
-            video.player.setAttribute('style', generateStyle(style));
-          }
-        });
-      }
+      ctx.drawImage(
+        this.state.background,
+        backgroundPosition.x,
+        backgroundPosition.y,
+        backgroundPosition.width,
+        backgroundPosition.height
+      );
     }
   }
 
   resized() {
-    // Considering the device pixels might be different from "pixels"
     const devicePixelRatio = window.devicePixelRatio || 1;
-    // Set the height to the height of the element
     this.canvas.height = this.canvas.offsetHeight * devicePixelRatio;
     this.canvas.width = this.canvas.offsetWidth * devicePixelRatio;
-    this.redraw();
+    this.setState(this.state);
   }
 
   /* Loads the background image and all the videos that makes up the collage */
   loadResources() {
     const collage = this.props.collage;
     // The background image
-    const backgroundElement = document.createElement('img');
-    backgroundElement.addEventListener('load', () => {
-      // When loaded, add this as a resource
-      this.resources.background = backgroundElement;
-      // Add a class to display the videos
-      this.videoContainer.className += ' CollageCanvas__video-container--visible';
-      this.redraw();
+    const background = document.createElement('img');
+    background.addEventListener('load', () => {
+      this.setState({ background });
     });
-    backgroundElement.src = collage.image;
-    // The videos
-    this.resources.videos = [];
-    collage.videos.forEach(video => {
-      const element = document.createElement('video');
-      const classes = 'video-js vjs-default-skin CollageCanvas__video';
-      element.setAttribute('class', classes);
-      // TODO: Consider putting a thumbnail in the videos poster attribute
-      addSource(element, video.videoData.files.hls, 'application/x-mpegURL');
-      addSource(element, video.videoData.files.rtmpMpeg4, 'rtmp/mp4');
-      addSource(element, video.videoData.files.rtmpFlv, 'rtmp/flv');
-
-      this.videoContainer.appendChild(element);
-      // Initialize the videojs player
-      const player = window.videojs(element, {
-        controls: 'auto',
-        loop: true,
-        autoplay: true,
-        preload: 'auto',
-        muted: true,
-        bigPlayButton: false,
-        inactivityTimeout: 500,
-        poster: video.videoData.files.thumbnail,
-        techOrder: ['html5', 'flash'],
-        controlBar: {
-          playToggle: false,
-          progressControl: false,
-          remainingTimeDisplay: false,
-          fullscreenToggle: false
-        }
-      });
-
-      this.resources.videos.push({
-        element,
-        player,
-        x: video.xPos,
-        y: video.yPos,
-        width: video.width,
-        height: video.height,
-        rotation: video.rotation
-      });
-
-      // If the video needs a user gesture to start, we show the controls.
-      player.on('suspend', (e) => {
-        if(player.paused()) {
-          this.showControls();
-        }
-      });
-      // When the video starts playing the large collage control get hidden.
-      player.on('play', this.hideControls);
-      player.on('useractive', () => {
-        // and start playing this
-        player.play();
-        // unmute
-        player.muted(false);
-        // Mute all other players
-        this.muteAllPlayers(player);
-      });
-      // TODO: Add a listner on error as well ...
-    });
-    this.redraw();
+    background.src = collage.image;
   }
 
   play() {
@@ -168,7 +98,6 @@ export default class CollageCanvas extends Component {
     });
   }
 
-
   muteAllPlayers(exceptPlayer) {
     this.resources.videos.forEach(video => {
       if(video.player !== exceptPlayer) {
@@ -178,7 +107,7 @@ export default class CollageCanvas extends Component {
   }
 
   backgroundPosition() {
-    const background = this.resources.background;
+    const background = this.state.background;
     const canvas = this.canvas;
 
     const canvasRatio = canvas.width / canvas.height;
@@ -205,46 +134,33 @@ export default class CollageCanvas extends Component {
     }
   }
 
-  componentDidMount() {
-    window.addEventListener('resize', this.resized);
-    this.resized();
-    this.loadResources();
-    // Redraw when fullscreen changes
-    fullscreen.addListener(this.redraw);
-    // Set the facebook url to share the current URL
-    const url = location.href;
-    this.setState({
-      facebookHref: 'http://www.facebook.com/sharer.php?u=' + url
-    });
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if(prevProps.collage.id !== this.props.collage.id) {
-      this.loadResources();
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.resized);
-    this.resources.videos.forEach(video => {
-      video.player.off('suspend');
-      video.player.off('play');
-      video.player.off('volumechange');
-    });
-    // Redraw when fullscreen changes
-    fullscreen.removeListener(this.redraw);
-  }
 
   render() {
+    let videos = null;
+    let visibleClass = '';
+    if(this.state.background) {
+      const backgroundPosition = this.backgroundPosition();
+
+      videos = this.props.collage.videos.map(video => {
+        return (<Video video={video} background={backgroundPosition}/>);
+      });
+
+      visibleClass = 'CollageCanvas__video-container--visible';
+    }
+
+    const url = location.href;
+
     return (
       <div className="CollageCanvas"
         ref={(e) => { this.everything = e; }}>
         <canvas className="CollageCanvas__canvas"
           ref={(e) => { this.canvas = e; }} />
-        <div className="CollageCanvas__video-container"
-          ref={(e) => { this.videoContainer = e; }} />
+        <div className={"CollageCanvas__video-container" + visibleClass}>
+          { videos }
+        </div>
         <a className="CollageCanvas__facebook-btn"
-          href={this.state.facebookHref}
+          href={'http://www.facebook.com/sharer.php?u=' + url}
           target="_blank">
           Del på Facebook
         </a>
@@ -260,4 +176,3 @@ export default class CollageCanvas extends Component {
     );
   }
 }
-
