@@ -22,8 +22,6 @@ class CollageCanvas extends Component {
     this.resized = this.resized.bind(this);
     this.play = this.play.bind(this);
     this.fullscreen = this.fullscreen.bind(this);
-    this.showControls = this.showControls.bind(this);
-    this.hideControls = this.hideControls.bind(this);
     this.redraw = this.redraw.bind(this);
   }
 
@@ -174,17 +172,6 @@ class CollageCanvas extends Component {
     });
   }
 
-  showControls() {
-    this.setState({
-      controlsVisible: true
-    });
-  }
-
-  hideControls() {
-    this.setState({
-      controlsVisible: false
-    });
-  }
 
   muteAllPlayers(exceptPlayer) {
     this.resources.videos.forEach(video => {
