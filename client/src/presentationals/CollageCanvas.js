@@ -134,33 +134,25 @@ export default class CollageCanvas extends Component {
     }
   }
 
-
-
   render() {
-    let videos = null;
-    let visibleClass = '';
-    if(this.state.background) {
-      const backgroundPosition = this.backgroundPosition();
-
-      videos = this.props.collage.videos.map(video => {
-        return (<Video video={video} background={backgroundPosition}/>);
-      });
-
-      visibleClass = 'CollageCanvas__video-container--visible';
-    }
-
-    const url = location.href;
-
     return (
       <div className="CollageCanvas"
         ref={(e) => { this.everything = e; }}>
         <canvas className="CollageCanvas__canvas"
           ref={(e) => { this.canvas = e; }} />
-        <div className={"CollageCanvas__video-container" + visibleClass}>
-          { videos }
+        <div className="CollageCanvas__video-container">
+        { this.state.background &&
+          this.props.collage.videos.map(video => {
+            return (
+              <Video
+                video={video}
+                background={this.backgroundPosition()}
+                registerChildPlayer={this.registerChildPlayer}
+                muteAllPlayers={this.muteAllPlayers}/> )})
+        }
         </div>
         <a className="CollageCanvas__facebook-btn"
-          href={'http://www.facebook.com/sharer.php?u=' + url}
+          href={'http://www.facebook.com/sharer.php?u=' + location.href}
           target="_blank">
           Del på Facebook
         </a>
