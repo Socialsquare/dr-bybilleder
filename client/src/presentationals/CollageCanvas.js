@@ -21,6 +21,10 @@ export default class CollageCanvas extends Component {
     this.state = {
       background: null,
     }
+    this.registerChildPlayer = this.registerChildPlayer.bind(this);
+    this.muteAllPlayers = this.muteAllPlayers.bind(this);
+
+    this.players = [];
   }
 
   componentDidMount() {
@@ -40,6 +44,16 @@ export default class CollageCanvas extends Component {
     window.removeEventListener('resize', this.resized);
   }
 
+  registerChildPlayer(player) {
+    this.players.push(player);
+  }
+  muteAllPlayers(exceptPlayer) {
+    this.players.forEach(player => {
+      if(player !== exceptPlayer) {
+        player.muted(true);
+      }
+    });
+  }
   drawCanvas() {
     const devicePixelRatio = window.devicePixelRatio || 1;
     // Initiate the canvas

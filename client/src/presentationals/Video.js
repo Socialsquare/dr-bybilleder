@@ -45,38 +45,24 @@ export default class Video extends Component {
         fullscreenToggle: false
       }
     });
+
+    this.props.registerChildPlayer(this.player);
   }
 
   registerListeners() {
     const { player } = this;
-    // If the video needs a user gesture to start, we show the controls.
-    player.on('suspend', (e) => {
-      if(player.paused()) {
-        //this.showControls();
-      }
-    });
     // When the video starts playing the large collage control get hidden.
-    //player.on('play', this.hideControls);
-    player.on('useractive', () => {
-      // and start playing this
-      //player.play();
-      // unmute
+    player.on('click', () => {
       player.muted(false);
       // Mute all other players
-      //this.muteAllplayers(player);
+      this.props.muteAllPlayers(player);
     });
-    player.off('click');
-    player.on('click', e => {
-      console.log('clicked!');
-      e.stopPropagation();
-    })
   }
 
   removeListeners() {
     const { player } = this;
     player.off('suspend');
     player.off('play');
-    player.off('volumechange');
   }
 
   setPosition() {
