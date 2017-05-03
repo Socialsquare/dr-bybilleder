@@ -50,7 +50,7 @@ const chaos = {
       const count = moduleResult.TotalCount;
       if(count === null || count === 0) {
         throw new Error('Could not locate the video');
-      } else if(count === 1) {
+      } else if(count >= 1) {
         const firstResult = moduleResult.Results.shift();
         const files = firstResult.Files;
         const result = {};
