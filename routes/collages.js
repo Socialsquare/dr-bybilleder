@@ -60,7 +60,7 @@ router.get('/collages', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
-  const {id} = req.params;
+  const { id } = req.params;
   const upperCaseId = id.toUpperCase();
   if(id !== upperCaseId) return res.redirect('/' + upperCaseId);
 
@@ -78,7 +78,7 @@ router.get('/:id', function(req, res, next) {
       const html = index.appendMetatags({
         'og:title': 'Mit bybillede fra ' + collage.eventName,
         'og:image': collage.thumbnail,
-        'og:description': '',
+        'og:description': 'Oplev danskerners bybilleder og skab dit eget med klip fra Dansk Kulturarvs arkiv.',
         'og:url': absoluteUrl(req, '/' + collage.id)
       });
       res.send(html);
