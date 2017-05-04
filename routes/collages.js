@@ -60,7 +60,10 @@ router.get('/collages', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
-  const id = req.params.id;
+  const {id} = req.params;
+  const upperCaseId = id.toUpperCase();
+  if(id !== upperCaseId) return res.redirect('/' + upperCaseId);
+
   Collage.findOne({id}).then(collage => {
     if(collage) {
       return deriveVideoUrls(req, collage.toObject());
