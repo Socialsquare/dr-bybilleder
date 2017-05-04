@@ -154,6 +154,7 @@ export default class CollageCanvas extends Component {
           this.props.collage.videos.map(video => {
             return (
               <Video
+                key={video.videoData.title}
                 video={video}
                 background={this.backgroundPosition()}
                 registerChildPlayer={this.registerChildPlayer}
