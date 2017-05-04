@@ -161,11 +161,19 @@ export default class CollageCanvas extends Component {
                 muteAllPlayers={this.muteAllPlayers}/> )})
         }
         </div>
-        <a className="CollageCanvas__facebook-btn"
-          href={'http://www.facebook.com/sharer.php?u=' + location.href}
-          target="_blank">
-          Del på Facebook
-        </a>
+        <div className="CollageCanvas__links">
+          <a className="CollageCanvas__link"
+            href={'http://www.facebook.com/sharer.php?u=' + location.href}
+            target="_blank">
+            Del på Facebook
+          </a>
+
+          <a className="CollageCanvas__link"
+            href="http://www.danskkulturarv.dk/"
+            target="_blank">
+            DKA
+          </a>
+        </div>
         <div className="CollageCanvas__fullscreen-btn"
           onClick={this.fullscreen}>
           {this.state.fullscreen ? (

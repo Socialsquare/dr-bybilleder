@@ -37,19 +37,23 @@
     height: 2rem;
   }
 
-  &__facebook-btn {
+  &__links {
     align-items: center;
     bottom: 0;
-    color: $font-color-on-dark;
     display: flex;
     font-family: 'GT Walsheim Pro Black';
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-style: normal;
     font-weight: bold;
     left: 0;
     overflow: hidden;
     padding: .5rem;
     position: absolute;
+  }
+
+  &__link {
+    color: $font-color-on-dark;
+    margin-right: .5rem;
   }
 
   &__fullscreen-btn {
