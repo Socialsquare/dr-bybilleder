@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addSource, generateStyle, fullscreen } from '../utils';
+import { fullscreen } from '../utils';
 import Video from './Video';
 
 import './CollageCanvas.css';
@@ -80,7 +80,6 @@ export default class CollageCanvas extends Component {
   }
 
   drawCanvas() {
-    const devicePixelRatio = window.devicePixelRatio || 1;
     // Initiate the canvas
     const ctx = this.canvas.getContext('2d');
 
