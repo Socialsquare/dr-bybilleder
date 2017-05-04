@@ -11,6 +11,7 @@ const path = require('path');
 dotenv.config();
 
 const collages = require('./routes/collages');
+const recent = require('./routes/recent');
 
 const app = express();
 
@@ -35,6 +36,7 @@ const CLIENT_BUILD_PATH = path.join(__dirname, 'client', 'build');
 assert.ok(fs.existsSync(CLIENT_BUILD_PATH), 'Build the client first');
 app.use(express.static(CLIENT_BUILD_PATH));
 
+app.use('/recent', recent);
 app.use('/', collages);
 
 const CLIENT_INDEX_PATH = path.join(CLIENT_BUILD_PATH, 'index.html');
@@ -43,7 +45,7 @@ app.use(function(req, res, next) {
   if(req.accepts(['html', 'json']) === 'html') {
     res.sendFile(CLIENT_INDEX_PATH);
   } else {
-    next();
+    //next();
   }
 });
 
