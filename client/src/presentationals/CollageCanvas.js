@@ -21,7 +21,6 @@ export default class CollageCanvas extends Component {
   constructor() {
     super();
     this.resized = this.resized.bind(this);
-    this.play = this.play.bind(this);
     this.fullscreen = this.fullscreen.bind(this);
     this.registerChildPlayer = this.registerChildPlayer.bind(this);
     this.muteAllPlayers = this.muteAllPlayers.bind(this);
@@ -50,16 +49,6 @@ export default class CollageCanvas extends Component {
     this.players.push(player);
   }
 
-  play() {
-    // Loop though all the video elements and start playback
-    this.resources.videos.forEach(video => {
-      if(!video.player.paused()) {
-        video.player.pause();
-      }
-      video.player.play();
-    });
-  }
-
   muteAllPlayers(exceptPlayer) {
     this.players.forEach(player => {
       if(player !== exceptPlayer) {
@@ -68,14 +57,13 @@ export default class CollageCanvas extends Component {
     });
   }
 
-  /* Loads the background image and all the videos that makes up the collage */
+  /* Loads the background image*/
   loadResources() {
     const collage = this.props.collage;
     // The background image
     const background = document.createElement('img');
-    background.addEventListener('load', () => {
-      this.setState({ background });
-    });
+    background.addEventListener('load', () => this.setState({ background }) );
+    // Start loading the image so we can trigger the above listener.
     background.src = collage.image;
   }
 
