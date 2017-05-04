@@ -61,9 +61,8 @@ export default class Video extends Component {
   }
 
   removeListeners() {
-    const { player } = this;
-    player.off('suspend');
-    player.off('play');
+    this.player.off('suspend');
+    this.player.off('play');
   }
 
   setPosition() {
