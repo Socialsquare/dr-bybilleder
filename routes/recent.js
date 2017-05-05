@@ -11,20 +11,20 @@ function getLatestCollage(eventName, index) {
   });
 }
 
-router.get('/:event/:index', function(req, res, next) {
+router.get('/:event/:index', function(req, res) {
   const { event, index } = req.params;
 
   getLatestCollage(event, index).then(collage => {
     res.redirect('/' + collage.id);
-  }, next());
+  });
 });
 
-router.get('/:event/:index/thumbnail', function(req, res, next) {
+router.get('/:event/:index/thumbnail', function(req, res) {
   const { event, index } = req.params;
 
   getLatestCollage(event, index).then(collage => {
     res.redirect(collage.thumbnail);
-  }, next());
+  });
 });
 
 module.exports = router;

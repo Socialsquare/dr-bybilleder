@@ -40,12 +40,12 @@ app.use('/recent', recent);
 app.use('/', collages);
 
 const CLIENT_INDEX_PATH = path.join(CLIENT_BUILD_PATH, 'index.html');
-// Instead of 404, render the clients index.html
+//Instead of 404, render the clients index.html
 app.use(function(req, res, next) {
   if(req.accepts(['html', 'json']) === 'html') {
     res.sendFile(CLIENT_INDEX_PATH);
   } else {
-    //next();
+    next();
   }
 });
 
