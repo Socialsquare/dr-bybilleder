@@ -22,8 +22,9 @@ export default class CollageCanvas extends Component {
     super();
     this.resized = this.resized.bind(this);
     this.fullscreen = this.fullscreen.bind(this);
-    this.registerChildPlayer = this.registerChildPlayer.bind(this);
     this.muteAllPlayers = this.muteAllPlayers.bind(this);
+
+    this.muteAllOnNextRender = false;
 
     this.players = [];
   }
@@ -39,22 +40,16 @@ export default class CollageCanvas extends Component {
       this.loadResources();
     }
     this.drawCanvas();
+    this.muteAllOnNextRender = false;
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resized);
   }
 
-  registerChildPlayer(player) {
-    this.players.push(player);
-  }
-
-  muteAllPlayers(exceptPlayer) {
-    this.players.forEach(player => {
-      if(player !== exceptPlayer) {
-        player.muted(true);
-      }
-    });
+  muteAllPlayers() {
+    this.muteAllOnNextRender = true;
+    this.setState(this.state);
   }
 
   /* Loads the background image*/
@@ -137,18 +132,14 @@ export default class CollageCanvas extends Component {
         ref={(e) => { this.everything = e; }}>
         <canvas className="CollageCanvas__canvas"
           ref={(e) => { this.canvas = e; }} />
-        <div className="CollageCanvas__video-container">
         { this.state.background &&
-          this.props.collage.videos.map(video => {
-            return (
-              <Video
-                key={video.videoData.title}
-                video={video}
-                background={this.backgroundPosition()}
-                registerChildPlayer={this.registerChildPlayer}
-                muteAllPlayers={this.muteAllPlayers}/> )})
+          <Videos
+            videos={this.props.collage.videos}
+            background={this.backgroundPosition()}
+            registerChildPlayer={this.registerChildPlayer}
+            muteAllPlayers={this.muteAllPlayers}
+            shouldMuteAll={this.muteAllOnNextRender}/>
         }
-        </div>
         <div className="CollageCanvas__links">
           <a className="CollageCanvas__link"
             href={'http://www.facebook.com/sharer.php?u=' + location.href}
@@ -173,4 +164,19 @@ export default class CollageCanvas extends Component {
       </div>
     );
   }
+}
+
+const Videos = ({videos, background, registerChildPlayer, muteAllPlayers, shouldMuteAll}) => {
+  let props = {background, registerChildPlayer, muteAllPlayers}
+  if(shouldMuteAll) props.muted = true;
+
+  return (
+    <div className="CollageCanvas__video-container">
+      { videos.map(video => {
+        return (
+          <Video key={video.videoData.title} video={video} { ...props } />
+        )}
+      ) }
+    </div>
+  );
 }

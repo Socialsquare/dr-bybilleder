@@ -20,7 +20,8 @@
   }
 
   &__video {
-    position: absolute;
+    height: 100%;
+    width: 100%;
 
     // Disables pause on click when the browser is native
     .vjs-tech {
@@ -30,6 +31,23 @@
     &:focus {
       outline: none;
     }
+  }
+
+  $border-width: 5px;
+  &__video-overlay {
+    //background-color: red;
+    border: $border-width dashed black;
+    height: 100%;
+    left: -$border-width;
+    opacity: .5;
+    position: absolute;
+    top: -$border-width;
+    width: 100%;
+    z-index: -100;
+  }
+
+  &__video-overlay--muted {
+    border: 0;
   }
 
   &__facebook-btn,
@@ -70,4 +88,8 @@
       width: 100%;
     }
   }
+}
+
+.vjs-control-bar {
+  display: none !important;
 }
