@@ -52,14 +52,17 @@ class Video extends Component {
   }
 
   componentWillReceiveProps({ muted }) {
+    // Only explicit changes in the muted prop should change our state.
+    // That means parent components should only pass the muted prop in case
+    // they wan't to force set it here.
     if(typeof(muted) !== 'undefined') {
       this.setState({ muted });
     }
   }
 
   componentDidUpdate() {
+    // Synchronize the players state with the components
     this.player.muted(this.state.muted);
-    //this.setPosition();
   }
 
   componentWillUnmount() {
@@ -92,28 +95,14 @@ class Video extends Component {
   }
 
   registerListeners() {
-    const { player } = this;
     this.overlay.addEventListener('click', (e) => {
-      console.log('cicked');
       let currentMutedStatuts = this.state.muted;
       this.props.muteAllPlayers();
       this.mute(!currentMutedStatuts);
     });
-
-    /*player.on('useractive', () => {
-      if(this.ignoreNextUserActive) {
-        this.ignoreNextUserActive = false;
-      } else {
-        player.play();
-        this.props.muteAllPlayers();
-        this.mute(false);
-      }
-    });*/
   }
 
   removeListeners() {
-    this.player.off('click');
-    this.player.off('useractive');
     this.overlay.removeEventListener('click');
   }
 
@@ -143,14 +132,10 @@ class Video extends Component {
   render() {
     const { hls, rtmpFlv, rtmpMpeg4 } = this.props.video.videoData.files;
 
-    let overlayClassName = 'CollageCanvas__video-overlay';
-    if(this.state.muted) overlayClassName += ' CollageCanvas__video-overlay--muted';
-
     return (
       <div style={this.getPosition()}>
-        <div ref={overlay => {this.overlay = overlay}} className={overlayClassName}>
+        <div ref={overlay => {this.overlay = overlay}} className='CollageCanvas__video-overlay'>
           { !this.state.muted && <HearingIcon />}
-          <span>Link</span>
         </div>
         <video ref={video => {this.videoElement = video}} className='video-js vjs-default-skin CollageCanvas__video'>
           <source src={hls} type='application/x-mpegURL'/>
