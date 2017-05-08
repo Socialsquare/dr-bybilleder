@@ -94,12 +94,13 @@ class Video extends Component {
   registerListeners() {
     const { player } = this;
     this.overlay.addEventListener('click', (e) => {
-      console.log('clicked');
-      this.ignoreNextUserActive = true;
-      this.mute(!this.state.muted);
+      console.log('cicked');
+      let currentMutedStatuts = this.state.muted;
+      this.props.muteAllPlayers();
+      this.mute(!currentMutedStatuts);
     });
 
-    player.on('useractive', () => {
+    /*player.on('useractive', () => {
       if(this.ignoreNextUserActive) {
         this.ignoreNextUserActive = false;
       } else {
@@ -107,7 +108,7 @@ class Video extends Component {
         this.props.muteAllPlayers();
         this.mute(false);
       }
-    });
+    });*/
   }
 
   removeListeners() {
