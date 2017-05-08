@@ -1,10 +1,43 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';1
+import PropTypes from 'prop-types';
 
-export default class Video extends Component {
+export default class Videos extends Component {
+  static propTypes = {
+    videos: PropTypes.array.isRequired,
+    background: PropTypes.object.isRequired,
+    muteAllPlayers: PropTypes.func.isRequired,
+    shouldMuteAll: PropTypes.bool
+  }
+
+  static defaultProps = {
+    shouldMuteAll: true
+  }
+
+  render() {
+    const { videos, background,  muteAllPlayers, shouldMuteAll } = this.props;
+
+    return (
+      <div className="CollageCanvas__video-container">
+        { videos.map(video => {
+          return (
+            <Video
+              key={video.videoData.title}
+              video={video}
+              background={background}
+              muteAllPlayers={muteAllPlayers}
+              muted={shouldMuteAll} />
+          )}
+        ) }
+      </div>
+    );
+  }
+}
+
+class Video extends Component {
   static propTypes = {
     video: PropTypes.object.isRequired,
     background: PropTypes.object.isRequired,
+    muteAllPlayers: PropTypes.func.isRequired,
     muted: PropTypes.bool
   }
 
@@ -12,13 +45,14 @@ export default class Video extends Component {
     muted: true
   }
 
-  constructor(props) {
-    super(props);
+  state = {
+    muted: true
+  }
+
+  constructor() {
+    super();
     this.videoElement = null;
     this.player = null;
-    this.state = {
-      muted: props.muted
-    }
   }
 
   componentDidMount() {
@@ -26,7 +60,7 @@ export default class Video extends Component {
     this.registerListeners();
   }
 
-  componentWillReceiveProps({muted}) {
+  componentWillReceiveProps({ muted }) {
     this.setState({ muted });
   }
 
@@ -37,6 +71,10 @@ export default class Video extends Component {
 
   componentWillUnmount() {
     this.removeListeners();
+  }
+
+  mute(muted) {
+    this.setState({ muted });
   }
 
   initPlayer() {
@@ -100,10 +138,6 @@ export default class Video extends Component {
       transformOrigin: '0 0', // Rotate around the upper left corner
       position: 'absolute'
     };
-  }
-
-  mute(muted) {
-    this.setState({ muted });
   }
 
   render() {

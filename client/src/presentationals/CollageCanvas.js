@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { fullscreen } from '../utils';
-import Video from './Video';
+import Videos from './Video';
 
 import './CollageCanvas.css';
 // import DogGridSvg from '../svgs/dot-grid.svg';
@@ -136,7 +136,6 @@ export default class CollageCanvas extends Component {
           <Videos
             videos={this.props.collage.videos}
             background={this.backgroundPosition()}
-            registerChildPlayer={this.registerChildPlayer}
             muteAllPlayers={this.muteAllPlayers}
             shouldMuteAll={this.muteAllOnNextRender}/>
         }
@@ -164,19 +163,4 @@ export default class CollageCanvas extends Component {
       </div>
     );
   }
-}
-
-const Videos = ({videos, background, registerChildPlayer, muteAllPlayers, shouldMuteAll}) => {
-  let props = {background, registerChildPlayer, muteAllPlayers}
-  if(shouldMuteAll) props.muted = true;
-
-  return (
-    <div className="CollageCanvas__video-container">
-      { videos.map(video => {
-        return (
-          <Video key={video.videoData.title} video={video} { ...props } />
-        )}
-      ) }
-    </div>
-  );
 }
