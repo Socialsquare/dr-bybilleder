@@ -9,25 +9,18 @@ export default class Videos extends Component {
     shouldMuteAll: PropTypes.bool
   }
 
-  static defaultProps = {
-    shouldMuteAll: true
-  }
-
   render() {
     const { videos, background,  muteAllPlayers, shouldMuteAll } = this.props;
+    let props = { background, muteAllPlayers };
+    if(shouldMuteAll) props.muted = true;
 
     return (
       <div className="CollageCanvas__video-container">
-        { videos.map(video => {
-          return (
-            <Video
-              key={video.videoData.title}
-              video={video}
-              background={background}
-              muteAllPlayers={muteAllPlayers}
-              muted={shouldMuteAll} />
-          )}
-        ) }
+        {
+          videos.map(video => {
+            return (<Video key={video.videoData.title} video={video} {...props} />)
+          })
+        }
       </div>
     );
   }
@@ -41,10 +34,6 @@ class Video extends Component {
     muted: PropTypes.bool
   }
 
-  static defaultProps = {
-    muted: true
-  }
-
   state = {
     muted: true
   }
@@ -53,6 +42,8 @@ class Video extends Component {
     super();
     this.videoElement = null;
     this.player = null;
+
+    this.ignoreNextUserActive = false;
   }
 
   componentDidMount() {
@@ -61,7 +52,9 @@ class Video extends Component {
   }
 
   componentWillReceiveProps({ muted }) {
-    this.setState({ muted });
+    if(typeof(muted) !== 'undefined') {
+      this.setState({ muted });
+    }
   }
 
   componentDidUpdate() {
@@ -100,21 +93,27 @@ class Video extends Component {
 
   registerListeners() {
     const { player } = this;
-    player.on('click', (e) => {
+    this.overlay.addEventListener('click', (e) => {
+      console.log('clicked');
+      this.ignoreNextUserActive = true;
       this.mute(!this.state.muted);
     });
 
     player.on('useractive', () => {
-      player.play();
-      let shouldMute = !this.state.muted;
-      this.props.muteAllPlayers();
-      this.mute(shouldMute);
+      if(this.ignoreNextUserActive) {
+        this.ignoreNextUserActive = false;
+      } else {
+        player.play();
+        this.props.muteAllPlayers();
+        this.mute(false);
+      }
     });
   }
 
   removeListeners() {
     this.player.off('click');
     this.player.off('useractive');
+    this.overlay.removeEventListener('click');
   }
 
   getPosition() {
@@ -148,7 +147,7 @@ class Video extends Component {
 
     return (
       <div style={this.getPosition()}>
-        <div className={overlayClassName}>
+        <div ref={overlay => {this.overlay = overlay}} className={overlayClassName}>
           { !this.state.muted && <HearingIcon />}
           <span>Link</span>
         </div>
