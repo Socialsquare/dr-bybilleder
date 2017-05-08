@@ -65,13 +65,16 @@ const chaos = {
       } else if(count >= 1) {
         const firstResult = moduleResult.Results.shift();
         const files = firstResult.Files;
-        const result = {};
+        const result = {
+          guid: firstResult.GUID,
+          files: {}
+        };
 
         const thumbnailFile = files.find(file => {
           return file.FormatID === 10;
         });
         if(thumbnailFile) {
-          result.thumbnail = thumbnailFile.URL;
+          result.files.thumbnail = thumbnailFile.URL;
         }
 
         const hlsFile = files.find(file => {
@@ -79,7 +82,7 @@ const chaos = {
         });
 
         if(hlsFile) {
-          result.hls = hlsFile.URL;
+          result.files.hls = hlsFile.URL;
         }
 
         const mpegFile = files.find(file => {
@@ -87,7 +90,7 @@ const chaos = {
           return extension === 'mp4';
         });
         if(mpegFile) {
-          result.rtmpMpeg4 = mpegFile.URL;
+          result.files.rtmpMpeg4 = mpegFile.URL;
         }
 
         const flvFile = files.find(file => {
@@ -95,11 +98,11 @@ const chaos = {
           return extension === 'flv';
         });
         if(flvFile) {
-          result.rtmpFlv = flvFile.URL;
+          result.files.rtmpFlv = flvFile.URL;
         }
 
-        if(result.rtmpMpeg4 && !result.hls) {
-          result.hls = generateHLSUrlFromRTMP(result.rtmpMpeg4);
+        if(result.rtmpMpeg4 && !result.files.hls) {
+          result.files.hls = generateHLSUrlFromRTMP(result.files.rtmpMpeg4);
         }
 
         return result;

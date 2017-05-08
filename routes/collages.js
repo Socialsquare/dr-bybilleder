@@ -16,8 +16,8 @@ const absoluteUrl = (req, path) => {
 
 const deriveVideoUrls = (req, collage) => {
   return Promise.all(collage.videos.map(video => {
-    return chaos.getVideoFiles(video).then(files => {
-      video.videoData.files = files;
+    return chaos.getVideoFiles(video).then(videoData => {
+      Object.assign(video.videoData, videoData);
       return video;
     });
   })).then((videos) => {
