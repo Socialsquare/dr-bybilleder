@@ -96,6 +96,7 @@ class Video extends Component {
 
   registerListeners() {
     this.overlay.addEventListener('click', (e) => {
+      this.player.play();
       let currentMutedStatuts = this.state.muted;
       this.props.muteAllPlayers();
       this.mute(!currentMutedStatuts);
