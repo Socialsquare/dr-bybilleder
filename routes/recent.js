@@ -11,19 +11,23 @@ function getLatestCollage(eventName, index) {
   });
 }
 
-router.get('/:event/:index', function(req, res) {
+router.get('/:event/:index', function(req, res, next) {
   const { event, index } = req.params;
 
   getLatestCollage(event, index).then(collage => {
     res.redirect('/' + collage.id);
+  }).catch(error => {
+    res.status(404).send('recent not found');
   });
 });
 
-router.get('/:event/:index/thumbnail', function(req, res) {
+router.get('/:event/:index/thumbnail', function(req, res, next) {
   const { event, index } = req.params;
 
   getLatestCollage(event, index).then(collage => {
     res.redirect(collage.thumbnail);
+  }).catch(error => {
+    res.status(404).send('recent not found');
   });
 });
 
