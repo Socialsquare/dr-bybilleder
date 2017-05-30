@@ -147,9 +147,9 @@ export default class CollageCanvas extends Component {
           </a>
 
           <a className="CollageCanvas__link"
-            href="http://www.danskkulturarv.dk/"
+            href="http://www.danskkulturarv.dk/dinby/"
             target="_blank">
-            DKA
+            Læs mere
           </a>
         </div>
         <div className="CollageCanvas__fullscreen-btn"
