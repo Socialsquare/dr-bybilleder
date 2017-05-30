@@ -9,7 +9,7 @@ import Collage from './containers/Collage';
 import './App.css';
 
 const Overview = () => {
-  return (<h1>Velkomment til Bybilleder</h1>);
+  return (<h1>Velkommen til Bybilleder</h1>);
 };
 
 class App extends Component {
