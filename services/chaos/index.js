@@ -101,7 +101,7 @@ const chaos = {
           result.files.rtmpFlv = flvFile.URL;
         }
 
-        if(result.rtmpMpeg4 && !result.files.hls) {
+        if(result.files.rtmpMpeg4 && !result.files.hls) {
           result.files.hls = generateHLSUrlFromRTMP(result.files.rtmpMpeg4);
         }
 
