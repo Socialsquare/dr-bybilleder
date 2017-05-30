@@ -76,9 +76,9 @@ router.get('/:id', function(req, res, next) {
       res.json(collage);
     } else {
       const html = index.appendMetatags({
-        'og:title': 'Mit bybillede fra ' + collage.eventName,
+        'og:title': 'Her har du mit bybillede med tv-klip fra min by, husker du det også?',
         'og:image': collage.thumbnail,
-        'og:description': 'Oplev danskerners bybilleder og skab dit eget med klip fra Dansk Kulturarvs arkiv.',
+        'og:description': 'Bybilledet er en interaktiv collage af arkivklip, hvor vi inviterer alle til at fortælle en historie om deres by i vores telt.',
         'og:url': absoluteUrl(req, '/' + collage.id)
       });
       res.send(html);
