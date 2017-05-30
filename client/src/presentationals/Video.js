@@ -48,7 +48,6 @@ class Video extends Component {
 
   componentDidMount() {
     this.initPlayer();
-    this.registerListeners();
   }
 
   componentWillReceiveProps({ muted }) {
@@ -63,10 +62,6 @@ class Video extends Component {
   componentDidUpdate() {
     // Synchronize the players state with the components
     this.player.muted(this.state.muted);
-  }
-
-  componentWillUnmount() {
-    this.removeListeners();
   }
 
   mute(muted) {
@@ -94,19 +89,6 @@ class Video extends Component {
     });
   }
 
-  registerListeners() {
-    this.overlay.addEventListener('click', (e) => {
-      this.player.play();
-      let currentMutedStatuts = this.state.muted;
-      this.props.muteAllPlayers();
-      this.mute(!currentMutedStatuts);
-    });
-  }
-
-  removeListeners() {
-    this.overlay.removeEventListener('click');
-  }
-
   getPosition() {
     if(this.player && this.player.isFullscreen()) return null;
 
@@ -130,13 +112,27 @@ class Video extends Component {
     };
   }
 
+  goToVideo = (e) => {
+    e.stopPropagation();
+    window.open('http://danskkulturarv.dk/?guid=' + this.props.video.videoData.guid, '_blank');
+  }
+
+  onOverlayClick = (e) => {
+    this.player.play();
+    let currentMutedStatus = this.state.muted;
+    this.props.muteAllPlayers(() => {
+      this.mute(!currentMutedStatus);
+    });
+  }
+
   render() {
     const { hls, rtmpFlv, rtmpMpeg4 } = this.props.video.videoData.files;
 
     return (
       <div style={this.getPosition()}>
-        <div ref={overlay => {this.overlay = overlay}} className='CollageCanvas__video-overlay'>
-          { !this.state.muted && <HearingIcon />}
+        <div onClick={this.onOverlayClick.bind(this)} className='CollageCanvas__video-overlay'>
+          { !this.state.muted && <VolumeIcon />}
+          <LinkIcon goToVideo={this.goToVideo}/>
         </div>
         <video ref={video => {this.videoElement = video}} className='video-js vjs-default-skin CollageCanvas__video'>
           <source src={hls} type='application/x-mpegURL'/>
@@ -148,11 +144,15 @@ class Video extends Component {
   }
 }
 
-const HearingIcon = () => {
-  return (
-    <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17 20c-.29 0-.56-.06-.76-.15-.71-.37-1.21-.88-1.71-2.38-.51-1.56-1.47-2.29-2.39-3-.79-.61-1.61-1.24-2.32-2.53C9.29 10.98 9 9.93 9 9c0-2.8 2.2-5 5-5s5 2.2 5 5h2c0-3.93-3.07-7-7-7S7 5.07 7 9c0 1.26.38 2.65 1.07 3.9.91 1.65 1.98 2.48 2.85 3.15.81.62 1.39 1.07 1.71 2.05.6 1.82 1.37 2.84 2.73 3.55.51.23 1.07.35 1.64.35 2.21 0 4-1.79 4-4h-2c0 1.1-.9 2-2 2zM7.64 2.64L6.22 1.22C4.23 3.21 3 5.96 3 9s1.23 5.79 3.22 7.78l1.41-1.41C6.01 13.74 5 11.49 5 9s1.01-4.74 2.64-6.36zM11.5 9c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5-2.5 1.12-2.5 2.5z"/>
-      <path d="M0 0h24v24H0z" fill="none"/>
-    </svg>
-  );
-}
+const VolumeIcon = () => (
+  <svg className="VideoIcon VideoIcon--volume" fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+  </svg>
+);
+
+const LinkIcon = ({goToVideo}) => (
+  <svg onClick={goToVideo} className="VideoIcon VideoIcon--link" fill="#FFFFFF" version="1.1" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 459 459" xmlns="http://www.w3.org/2000/svg" >
+    <path d="M459,216.75L280.5,38.25v102c-178.5,25.5-255,153-280.5,280.5C63.75,331.5,153,290.7,280.5,290.7v104.55L459,216.75z" />
+  </svg>
+);

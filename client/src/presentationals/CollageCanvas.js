@@ -47,9 +47,9 @@ export default class CollageCanvas extends Component {
     window.removeEventListener('resize', this.resized);
   }
 
-  muteAllPlayers() {
+  muteAllPlayers(callback) {
     this.muteAllOnNextRender = true;
-    this.setState(this.state);
+    this.setState(this.state, callback);
   }
 
   /* Loads the background image*/
