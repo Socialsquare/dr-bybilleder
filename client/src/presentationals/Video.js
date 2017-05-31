@@ -134,7 +134,7 @@ class Video extends Component {
           { !this.state.muted && <VolumeIcon />}
           <LinkIcon goToVideo={this.goToVideo}/>
         </div>
-        <video ref={video => {this.videoElement = video}} className='video-js vjs-default-skin CollageCanvas__video'>
+        <video muted playsInline ref={video => {this.videoElement = video}} className='video-js vjs-default-skin CollageCanvas__video'>
           <source src={hls} type='application/x-mpegURL'/>
           <source src={rtmpFlv} type='rtmp/mp4'/>
           <source src={rtmpMpeg4} type='rtmp/flv'/>
