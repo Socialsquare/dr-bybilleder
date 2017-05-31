@@ -87,9 +87,13 @@ class Video extends Component {
     // If our video isn't autoplaying after the first data is loaded
     // the client doesn't support it and we show a hint.
     this.player.one('loadeddata', () => {
-      if(this.player.paused()){
-        this.setState({showPlayIcon: true})
-      }
+      // A bit hacky, but the extra time allows the video
+      // to play in mobile Chrome before the check.
+      setTimeout(() => {
+        if(this.player.paused()){
+          this.setState({showPlayIcon: true})
+        }
+      },500);
     })
   }
 
