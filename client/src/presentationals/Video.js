@@ -40,12 +40,12 @@ class Video extends Component {
     super();
     this.videoElement = null;
     this.player = null;
-
-    this.ignoreNextUserActive = false;
   }
 
   componentDidMount() {
     this.initPlayer();
+    // This triggers autoplay on iOS 10, I'm not entirely sure why though.
+    this.setState(this.state);
   }
 
   componentWillReceiveProps({ muted }) {
@@ -134,7 +134,7 @@ class Video extends Component {
           { !this.state.muted && <VolumeIcon />}
           <LinkIcon goToVideo={this.goToVideo}/>
         </div>
-        <video autoPlay muted playInline ref={video => {this.videoElement = video}} className='video-js vjs-default-skin CollageCanvas__video'>
+        <video ref={video => {this.videoElement = video}} className='video-js vjs-default-skin CollageCanvas__video'>
           <source src={hls} type='application/x-mpegURL'/>
           <source src={rtmpFlv} type='rtmp/mp4'/>
           <source src={rtmpMpeg4} type='rtmp/flv'/>
