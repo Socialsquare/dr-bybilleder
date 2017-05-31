@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import PlayIcon from '../svgs/play.svg';
+
 export default class Videos extends Component {
   static propTypes = {
     videos: PropTypes.array.isRequired,
@@ -33,7 +35,8 @@ class Video extends Component {
   }
 
   state = {
-    muted: true
+    muted: true,
+    showPlayIcon: false
   }
 
   constructor() {
@@ -62,10 +65,6 @@ class Video extends Component {
     this.player.muted(this.state.muted);
   }
 
-  mute(muted) {
-    this.setState({ muted });
-  }
-
   initPlayer() {
     this.player = window.videojs(this.videoElement, {
       controls: 'auto',
@@ -85,6 +84,13 @@ class Video extends Component {
         fullscreenToggle: false
       }
     });
+    // If our video isn't autoplaying after the first data is loaded
+    // the client doesn't support it and we show a hint.
+    this.player.one('loadeddata', () => {
+      if(this.player.paused()){
+        this.setState({showPlayIcon: true})
+      }
+    })
   }
 
   getPosition() {
@@ -121,7 +127,10 @@ class Video extends Component {
     this.props.muteAllPlayers(() => {
       // We're providing a callback function so that
       // React doesn't batch our state changes.
-      this.mute(!currentMutedStatus);
+      this.setState({
+        muted: !currentMutedStatus,
+        showPlayIcon: false
+      })
     });
   }
 
@@ -131,10 +140,11 @@ class Video extends Component {
     return (
       <div style={this.getPosition()}>
         <div onClick={this.onOverlayClick.bind(this)} className='CollageCanvas__video-overlay'>
+          { this.state.showPlayIcon && <img src={PlayIcon} alt='Play' /> }
           { !this.state.muted && <VolumeIcon />}
           <LinkIcon goToVideo={this.goToVideo}/>
         </div>
-        <video muted playsInline ref={video => {this.videoElement = video}} className='video-js vjs-default-skin CollageCanvas__video'>
+        <video ref={video => {this.videoElement = video}} className='video-js vjs-default-skin CollageCanvas__video'>
           <source src={hls} type='application/x-mpegURL'/>
           <source src={rtmpFlv} type='rtmp/mp4'/>
           <source src={rtmpMpeg4} type='rtmp/flv'/>

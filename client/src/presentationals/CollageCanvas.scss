@@ -35,10 +35,18 @@
   $border-width: 5px;
 
   &__video-overlay {
+    align-items: center;
+    display: flex;
     height: 100%;
+    justify-content: center;
     position: absolute;
     width: 100%;
     z-index: 100;
+
+    img {
+      height: 20%;
+      width: 20%;
+    }
 
     .VideoIcon {
       bottom: 4%;
@@ -46,6 +54,12 @@
       opacity: .7;
       position: absolute;
       width: 10%;
+    }
+
+    .VideoIcon--play {
+      &:hover {
+        opacity: .9;
+      }
     }
 
     .VideoIcon--link {
