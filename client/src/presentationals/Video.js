@@ -16,11 +16,9 @@ export default class Videos extends Component {
 
     return (
       <div className="CollageCanvas__video-container">
-        {
-          videos.map(video => {
-            return (<Video key={video.videoData.title} video={video} {...props} />)
-          })
-        }
+        { videos.map(video => (
+            <Video key={video.videoData.title} video={video} {...props} />
+          )) }
       </div>
     );
   }
@@ -113,7 +111,7 @@ class Video extends Component {
   }
 
   goToVideo = (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Let's not trigger an overlay click.
     window.open('http://danskkulturarv.dk/?guid=' + this.props.video.videoData.guid, '_blank');
   }
 
@@ -121,6 +119,8 @@ class Video extends Component {
     this.player.play();
     let currentMutedStatus = this.state.muted;
     this.props.muteAllPlayers(() => {
+      // We're providing a callback function so that
+      // React doesn't batch our state changes.
       this.mute(!currentMutedStatus);
     });
   }
