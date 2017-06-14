@@ -7,6 +7,7 @@ const favicon = require('serve-favicon');
 const fs = require('fs');
 const logger = require('morgan');
 const path = require('path');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json({
   limit: '10mb'
 }));
+app.use(cors({ origin: 'http://danskkulturarv.dk' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
