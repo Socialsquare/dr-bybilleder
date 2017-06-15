@@ -76,7 +76,7 @@ router.get('/:id', function(req, res, next) {
       res.json(collage);
     } else {
       const html = index.appendMetatags({
-        'og:title': 'Min politiske Danmarkshistorie',
+        'og:title': 'Min politiske danmarkshistorie',
         'og:image': collage.thumbnail,
         'og:description': 'Her er min politiske danmarkshistorie - fortalt med klip fra DRs arkiver.',
         'og:url': absoluteUrl(req, '/' + collage.id)
