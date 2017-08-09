@@ -76,9 +76,9 @@ router.get('/:id', function(req, res, next) {
       res.json(collage);
     } else {
       const html = index.appendMetatags({
-        'og:title': 'Min politiske danmarkshistorie',
+        'og:title': 'Her har du mit bybillede med tv-klip fra min by, husker du det også?',
         'og:image': collage.thumbnail,
-        'og:description': 'Her er min politiske danmarkshistorie - fortalt med klip fra DRs arkiver.',
+        'og:description': 'Bybilledet er en interaktiv collage af arkivklip, hvor vi inviterer alle til at fortælle en historie om deres by i vores telt.',
         'og:url': absoluteUrl(req, '/' + collage.id)
       });
       res.send(html);
